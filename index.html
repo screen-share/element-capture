@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>Element Capture</title>
+    <script class="remove" src="element-capture.js" type="text/javascript"></script>
+    <script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
+  </head>
+  <body>
+    <section id="abstract">
+      <h2>Abstract</h2>
+      <p>
+        Pre-existing mechanisms such as {{MediaDevices/getDisplayMedia()}} allow Web applications to
+        initiate screen-capture. If the user chooses to share a tab, the capturing application would
+        have a video {{MediaStreamTrack}}. Mechanisms such as [[mediacapture-region|Region Capture]]
+        allow this track to be mutated - performing some operation on the captured frames. (In the
+        case of [[mediacapture-region|Region Capture]], this mutation consists of cropping.)
+      </p>
+      <p>
+        This document introduces a new mutation mechanism which we name "restriction". After a Web
+        application "restricts" a video track to a given target-element, frames produced on that
+        video track only consist information from the target-element and (and its descendants).
+        Phrased differently, the track becomes a capture of the DOM sub-tree rooted at the
+        target-element.
+      </p>
+    </section>
+    <section id="sotd"></section>
+    <section id="conformance"></section>
+    <section id="use-cases">
+      <h2>Use Cases</h2>
+      <section id="generic-use-case">
+        <h3>Generic Use-Case</h3>
+        <p>
+          [[mediacapture-region|Region Capture]] allows applications to crop captures. Assume some
+          element <code>TARGET</code> is the crop-target. What if other elements, which are not
+          DOM-descendants of <code>TARGET</code>, draw in front of <code>TARGET</code>? Using
+          [[mediacapture-region|Region Capture]], these other elements would also get captured,
+          which is not always desirable. A mechanism is sought that would allow cropping to
+          <code>TARGET</code>'s bounding box, while also excluding from capture any of the content
+          that is not a DOM-descendant.
+        </p>
+      </section>
+      <section id="practical-use-case-1">
+        <h3>Practical Use-Case #1: Recording part of an app</h3>
+        <p>
+          Consider an "editor" Web application (text-editor, image-editor, slides-editor or
+          video-editor). Such applications often include a main content area, surrounded by various
+          toolbars, drop-down menus and widgets which allow the local user to edito the content in
+          the main content area.
+        </p>
+        <p>
+          Sometimes a Web application wishes to record only the main content area, and then either
+          transmit it "live" to remote participants, or record it to disk. Such an application would
+          not necessarily wish to expend storage, bandwidth, or remote participants' screen
+          real-estate on anything outside of the main content area.
+        </p>
+        <p>
+          A mechanism such as [[mediacapture-region|Region Capture]] helps with cropping to the
+          bounding box of the target-element, but what happens when drop-down lists temporarily draw
+          over it?
+        </p>
+      </section>
+      <section id="practical-use-case-2">
+        <h3>Practical Use-Case #2: Collaborative tools during video-conferencing</h3>
+        <p>
+          Video-conferencing applications often arrange themselves using "tiles" - each remote
+          participant's video is presented in a tile. Assume that a collaborative Web application,
+          like a text editor or an image-editing application, is loaded in another iframe, and that
+          this iframe is also presented as a tile.
+        </p>
+        <p>
+          Some remote participants would similarly load the same tool in a dedicated tile. But what
+          if some users don't have the necessary permissions to load that tool? Or if they are
+          joining from a platform that does not support the tool? else.
+        </p>
+        <p>
+          The video conferencing solution may then choose to have one of the participants who have
+          loaded the tool successfully screen-share that tool's tile to the users who cannot load
+          the tool, allowing them to at least view it, although not interact with it. This can be
+          done using self-capture through {{MediaDevices/getDisplayMedia()}} and
+          [[mediacapture-region|Region Capture]].
+        </p>
+        <p>
+          But such a solution introduces some problems. What happens if other elements ever draw on
+          top of the tool tile, either briefly or permanently? Examples include:
+        </p>
+        <ul>
+          <li>Private messages sent inside of the video-conferencing application.</li>
+          <li>Requests by new users to join.</li>
+          <li>Other tiles during tile-layout changes.</li>
+          <li>Drop-down lists from other elements of the video-conferencing application.</li>
+        </ul>
+      </section>
+    </section>
+    <section id="solution-overview">
+      <h2>Solution Overview</h2>
+      <p>The Element Capture mechanism comprises two parts:</p>
+      <ol>
+        <li>
+          [=CropTarget production=]: A mechanism for <dfn>tagging</dfn> an {{Element}} as a
+          potential target for the [=restriction mechanism=].
+        </li>
+        <li>
+          [=Restriction mechanism=]: A mechanism for instructing the user agent to start restricting
+          a video track to the bounding box of a previously [=tagging|tagged=] {{Element}}, or to
+          stop such restriction and revert a track to its [=unrestricted=] state.
+        </li>
+      </ol>
+      <p>
+        We define two <dfn>restriction-states</dfn>. <dfn>restricted</dfn> and
+        <dfn>unrestricted</dfn>. Video tracks are always in one state or the other. Tracks start out
+        [=unrestricted=], and may turn to [=restricted=] when
+        {{BrowserCaptureMediaStreamTrack/restrictTo()}} is successfully called.
+      </p>
+    </section>
+    <section id="produce-crop-target">
+      <h2><dfn>CropTarget Production</dfn></h2>
+      <p>
+        The [[mediacapture-region|Region Capture]] specification details before the
+        <a data-cite="mediacapture-region#produce-crop-target">mechanism</a> for {{CropTarget}}s as
+        well as the <a data-cite="mediacapture-region#crop-target-motivation">motivation</a> for
+        using them.
+      </p>
+    </section>
+    <section id="restricting-a-track">
+      <h2><dfn>Restriction Mechanism</dfn></h2>
+      <section id="browser-capture-media-stream-track-extension">
+        <h3>BrowserCaptureMediaStreamTrack extension</h3>
+        <p>
+          [[mediacapture-region|Region Capture]] introduced the {{BrowserCaptureMediaStreamTrack}}
+          interface. We extend it with a new method, {{BrowserCaptureMediaStreamTrack/restrictTo}}.
+        </p>
+        <pre class="idl">
+          [Exposed = Window]
+          partial interface BrowserCaptureMediaStreamTrack {
+            Promise&lt;undefined&gt; restrictTo(CropTarget? cropTarget);
+          };
+        </pre>
+        <dl
+          data-link-for="BrowserCaptureMediaStreamTrack"
+          data-dfn-for="BrowserCaptureMediaStreamTrack"
+        >
+          <dt>
+            <dfn>restrictTo()</dfn>
+          </dt>
+          <dd>
+            <p>
+              Calls to this method instruct the user agent to start/stop restrict a video track.
+              When invoked, the user agent MUST execute the following algorithm:
+            </p>
+            <ol>
+              <li>Let <var>p</var> be a new {{Promise}}.</li>
+              <li>
+                <p>Run the following steps in parallel:</p>
+                <ol>
+                  <li>
+                    <p>
+                      If [=this=] track's
+                      <a data-cite="mediacapture-streams/#dfn-kind">kind</a>
+                      is not <a data-cite="mediacapture-streams/#dfn-video">"video"</a>, return a
+                      [=rejected=] {{Promise}} with {{NotSupportedError}}.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      If [=this=] track's
+                      <a data-cite="mediacapture-streams/#dfn-readystate">readyState</a>
+                      is not
+                      <a data-cite="mediacapture-streams/#idl-def-MediaStreamTrackState.live"
+                        >"live"</a
+                      >, return a [=rejected=] {{Promise}} with {{NotSupportedError}}. If the track
+                      is not live, return a rejected Promise with {{InvalidStateError}}.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      If [=this=] video track is
+                      <a data-cite="mediacapture-region#dfn-cropped">cropped</a>, return a
+                      {{Promise}} [=rejected=] with an {{InvalidStateError}}.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      If <var>cropTarget</var> is not {{undefined}}, but does not represent an
+                      {{Element}} within a [=browsing context=] whose [=top-level browsing context=]
+                      is the same as that which the track is capturing, the user agent MUST return a
+                      {{Promise}} [=rejected=] with an {{UnknownError}}.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      Update [=this=] video track's [=restriction-state=] according to
+                      <var>cropTarget</var>:
+                    </p>
+                    <ul>
+                      <li>
+                        If <var>cropTarget</var> is NOT {{undefined}}, the user agent MUST set
+                        [=this=] video track's [=restriction-state=] to [=restricted=] and start
+                        restricting the track as follows:
+                        <ul>
+                          <li>
+                            Cropping the video to the intersection of the target-element's bounding
+                            box and the [=top-level browsing context=]'s viewport.
+                          </li>
+                          <li>
+                            Remove any pixels not derived from either the target-element or its
+                            descendants. (TODO: This point requires a less hand-wavy definition.)
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        If <var>cropTarget</var> is set to {{undefined}}, the user agent MUST set
+                        [=this=] video track's [=restriction-state=] to [=unrestricted=] and stop
+                        restricting the track.
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <p>
+                      Call the track's state before this method invocation <var>PRE-STATE</var>, and
+                      after this method invocation <var>POST-STATE</var>. The user agent MUST
+                      resolve <var>p</var> when it is guaranteed that no more frames cropped (or
+                      uncropped) according to <var>PRE-STATE</var> will be delivered to the
+                      application, and that any additional frames delivered to the application will
+                      therefore be cropped (or uncropped) according to either
+                      <var>POST-STATE</var> or a later state.
+                    </p>
+                  </li>
+                </ol>
+              </li>
+              <li>Return <var>p</var>.</li>
+            </ol>
+          </dd>
+        </dl>
+      </section>
+    </section>
+    <section id="sample-code">
+      <h2>Sample Code</h2>
+      <div class="example">
+        <p>Code in the capture-target:</p>
+        <pre class="javascript">
+          const mainContentArea = navigator.getElementById('mainContentArea');
+          const cropTarget = await CropTarget.fromElement(mainContentArea);
+          sendCropTarget(cropTarget);
+
+          function sendCropTarget(cropTarget) {
+            // Either send the crop-target using postMessage(),
+            // or pass it on locally within the same document.
+          }
+        </pre>
+      </div>
+      <div class="example">
+        <p>Code in the capturing-document:</p>
+        <pre class="javascript">
+          async function startRestrictedCapture(cropTarget) {
+            const stream = await navigator.mediaDevices.getDisplayMedia();
+            const [track] = stream.getVideoTracks();
+            if (!!track.restrictTo) {
+              handleError(stream);
+              return;
+            }
+            await track.restrictTo(cropTarget);
+            transmitVideoRemotely(track);
+          }
+        </pre>
+      </div>
+    </section>
+  </body>
+</html>
