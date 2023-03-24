@@ -14,7 +14,8 @@ This Web app combines a productivity suite and a video conferencing tool. It use
 
 But if other HTMLElements end up being drawn on top of the "main content area", they also get captured. This is not always desirable - see the following illustration.
 
-![227634075-c3304360-7465-4a72-9a65-a25293e22554](https://user-images.githubusercontent.com/22117736/227634359-a98136df-45dd-427d-802f-452be4612862.png)
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/22117736/227634359-a98136df-45dd-427d-802f-452be4612862.png" width="750"></img>
+</p>
 
-Element Capture will allow this app to capture only the main content area, excluding any occluding content such as drop-down lists.
-
+Element Capture allows this app to capture only the main content area, excluding any occluding content such as drop-down lists.
