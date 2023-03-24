@@ -19,3 +19,38 @@ But if other HTMLElements end up being drawn on top of the "main content area", 
 </p>
 
 Element Capture allows this app to capture only the main content area, excluding any occluding content such as drop-down lists.
+
+A partial list of use-cases includes:
+* Removing sensitive content from video-captures, such as private messages.
+* Removing distracting content from video-captures, such as drop-down lists.
+* Client-side rendering.
+
+## Sample Code
+
+Code in the capture-target:
+
+```js
+const mainContentArea = navigator.getElementById('mainContentArea');
+const cropTarget = await CropTarget.fromElement(mainContentArea);
+sendCropTarget(cropTarget);
+
+function sendCropTarget(cropTarget) {
+  // Either send the crop-target using postMessage(),
+  // or pass it on locally within the same document.
+}
+```
+
+Code in the capturing-document:
+
+```js
+async function startRestrictedCapture(cropTarget) {
+  const stream = await navigator.mediaDevices.getDisplayMedia();
+  const [track] = stream.getVideoTracks();
+  if (!!track.restrictTo) {
+    handleError(stream);
+    return;
+  }
+  await track.restrictTo(cropTarget);
+  transmitVideoRemotely(track);
+}
+```
