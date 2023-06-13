@@ -196,22 +196,14 @@
                       <li>
                         If <var>cropTarget</var> is NOT {{undefined}}, the user agent MUST set
                         [=this=] video track's [=restriction-state=] to [=restricted=] and start
-                        restricting the track as follows:
-                        <ul>
-                          <li>
-                            Cropping the video to the intersection of the target-element's bounding
-                            box and the [=top-level browsing context=]'s viewport.
-                          </li>
-                          <li>
-                            Remove any pixels not derived from either the target-element or its
-                            descendants. (TODO: This point requires a less hand-wavy definition.)
-                          </li>
-                        </ul>
+                        [=applying the restriction transformation=] to all frames delivered to
+                        [=this=] video track.
                       </li>
                       <li>
                         If <var>cropTarget</var> is set to {{undefined}}, the user agent MUST set
                         [=this=] video track's [=restriction-state=] to [=unrestricted=] and stop
-                        restricting the track.
+                        [=applying the restriction transformation=] to all frames delivered to
+                        [=this=] video track.
                       </li>
                     </ul>
                   </li>
@@ -233,6 +225,35 @@
           </dd>
         </dl>
       </section>
+    </section>
+    <section id="applying-the-restriction-transformation">
+      <h2><dfn>Applying the restriction transformation</dfn></h2>
+      <p>
+        When it's time to produce <var>frame</var> for a video track <var>videoTrack</var> that is
+        [=restricted=] to a given target <var>cropTarget</var>, execute the following algorithm:
+      </p>
+      <ol>
+        <li>
+          <!-- TODO(eladalon1983): Fix linkability of slots in the mediacapture-region spec. -->
+          If <var>cropTarget</var>.[[\Element]] does not represent an element that's in the DOM of
+          either the captured [=top-level browsing context=] or one of its descendant [=browsing
+          contexts=], abort without producing a new frame.
+        </li>
+        <li>
+          <!-- TODO(eladalon1983 / mfoltzgoogle): Improve spec language around rendering. -->
+          <!-- TODO(eladalon1983 / mfoltzgoogle): Specify the following "TODO reasons". -->
+          Because of TODO reasons, it is guaranteed that the <var>cropTarget</var>.[[\Element]] is
+          in its own stacking context. Ensure this stacking context is rendered in a separate pass,
+          clip the result to the intersection with the captured [=top-level browsing context=]'s
+          viewport, and deliver the frame to <var>videoTrack</var>.
+          <div class="note">
+            It is outside of the scope of this specification whether the result of the separate
+            render pass is used when producing a full representation of the captured surface for
+            display to the user, or for use in other captured tracks, or whether the captured
+            element is essentially rendered twice.
+          </div>
+        </li>
+      </ol>
     </section>
     <section id="sample-code">
       <h2>Sample Code</h2>
