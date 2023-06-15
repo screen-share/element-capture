@@ -197,13 +197,13 @@
                         If <var>cropTarget</var> is NOT {{undefined}}, the user agent MUST set
                         [=this=] video track's [=restriction-state=] to [=restricted=] and start
                         [=applying the restriction transformation=] to all frames delivered to
-                        [=this=] video track.
+                        [=this=] video track with <var>cropTarget</var> as the target.
                       </li>
                       <li>
                         If <var>cropTarget</var> is set to {{undefined}}, the user agent MUST set
                         [=this=] video track's [=restriction-state=] to [=unrestricted=] and stop
-                        [=applying the restriction transformation=] to all frames delivered to
-                        [=this=] video track.
+                        [=applying the restriction transformation=] to frames delivered to [=this=]
+                        video track.
                       </li>
                     </ul>
                   </li>
