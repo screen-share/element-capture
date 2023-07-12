@@ -1,5 +1,6 @@
 var respecConfig = {
-  specStatus: "unofficial",
+  group: "cg/sccg",
+  specStatus: "CG-DRAFT",
   github: {
     repoURL: "https://github.com/screen-share/element-capture/",
     branch: "main",
