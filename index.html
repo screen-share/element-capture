@@ -235,9 +235,10 @@
       </p>
       <ol>
         <li>
-          If <var>cropTarget</var>.{{CropTarget/[[Element]]}} does not represent an element that's
-          in the DOM of either the captured [=top-level browsing context=] or one of its descendant
-          [=browsing contexts=], abort without producing a new frame.
+          If <var>cropTarget</var>.{{CropTarget/[[Element]]}} does not represent an {{Element}}
+          whose [=shadow-including root=] is a [=document=] within the captured surface's
+          [=top-level browsing context=] or a descendant [=browsing contexts=] thereof, abort
+          without producing a new frame.
         </li>
         <li>
           <!-- TODO(eladalon1983 / mfoltzgoogle): Improve spec language around rendering. -->
