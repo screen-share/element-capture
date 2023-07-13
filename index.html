@@ -312,18 +312,9 @@
         </li>
         <li>If <var>intersection</var> is empty, abort without producing a new frame.</li>
         <li>
-          <!-- TODO(eladalon1983 / mfoltzgoogle): Improve spec language around rendering. -->
-          <!-- TODO(eladalon1983 / mfoltzgoogle): Specify the following "TODO reasons". -->
-          Because of TODO reasons, it is guaranteed that the
-          <var>E</var> is in its own stacking context. Ensure this stacking context is rendered in a
-          separate pass, clip the result to the intersection with the captured [=top-level browsing
-          context=]'s viewport, and deliver the frame to <var>videoTrack</var>.
-          <div class="note">
-            It is outside of the scope of this specification whether the result of the separate
-            render pass is used when producing a full representation of the captured surface for
-            display to the user, or for use in other captured tracks, or whether the captured
-            element is essentially rendered twice.
-          </div>
+          A corollary of previous steps is that <var>E</var> forms a stacking context. Produce and
+          deliver a frame consisting of an independent rendering of that stacking context, clipped
+          to <var>intersection</var>.
         </li>
       </ol>
     </section>
