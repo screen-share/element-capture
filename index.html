@@ -241,6 +241,12 @@
           without producing a new frame.
         </li>
         <li>
+          Let <var>intersection</var> be the intersection of
+          <var>cropTarget</var>.{{CropTarget/[[Element]]}}'s bounding box. and the captured
+          surface's [=top-level browsing context=]'s viewport.
+        </li>
+        <li>If <var>intersection</var> is empty, abort without producing a new frame.</li>
+        <li>
           <!-- TODO(eladalon1983 / mfoltzgoogle): Improve spec language around rendering. -->
           <!-- TODO(eladalon1983 / mfoltzgoogle): Specify the following "TODO reasons". -->
           Because of TODO reasons, it is guaranteed that the
