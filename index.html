@@ -235,35 +235,31 @@
               execute the following algorithm:
             </p>
             <ol>
+              <li>
+                <p>
+                  If [=this=] is not a [=restrictable MediaStreamTrack=], return a {{Promise}}
+                  [=rejected=] with a new {{NotSupportedError}}.
+                </p>
+              </li>
               <li>Let <var>p</var> be a new {{Promise}}.</li>
               <li>
                 <p>Run the following steps in parallel:</p>
                 <ol>
                   <li>
+                    <p>Let <var>E</var> be <var>cropTarget</var>.{{CropTarget/[[Element]]}}.</p>
+                  </li>
+                  <li>
                     <p>
-                      If [=this=] is not a [=restrictable MediaStreamTrack=], return a {{Promise}}
-                      rejected with an error as follows:
+                      If <var>E</var> is not a [=valid restriction target=] for [=this=], return a
+                      {{Promise}} [=rejected=] with a new {{InvalidStateError}}.
                     </p>
-                    <ol>
-                      <li>
-                        If <var>T</var> is not a {{MediaStreamTrack}} returned inside of a
-                        {{MediaStream}} through a call to {{MediaDevices/getDisplayMedia()}}, or a
-                        clone of such a track, use {{NotSupportedError}}.
-                      </li>
-                      <li>
-                        If [=this=].<a data-cite="mediacapture-streams/#dfn-kind">kind</a> is not
-                        <a data-cite="mediacapture-streams/#dfn-video">"video"</a>, use
-                        {{NotSupportedError}}.
-                      </li>
-                      <li>Otherwise, use {{InvalidStateError}}.</li>
-                    </ol>
                   </li>
                   <li>
                     <p>
                       Update [=this=] video track's [=restriction-state=] according to
                       <var>cropTarget</var>:
                     </p>
-                    <ul>
+                    <ol>
                       <li>
                         If <var>cropTarget</var> is NOT {{undefined}}, the user agent MUST set
                         [=this=] video track's [=restriction-state=] to [=restricted=] and start
@@ -276,16 +272,16 @@
                         [=applying the restriction transformation=] to frames delivered to [=this=]
                         video track.
                       </li>
-                    </ul>
+                    </ol>
                   </li>
                   <li>
                     <p>
                       Call the track's state before this method invocation <var>PRE-STATE</var>, and
                       after this method invocation <var>POST-STATE</var>. The user agent MUST
-                      resolve <var>p</var> when it is guaranteed that no more frames cropped (or
-                      uncropped) according to <var>PRE-STATE</var> will be delivered to the
-                      application, and that any additional frames delivered to the application will
-                      therefore be cropped (or uncropped) according to either
+                      resolve <var>p</var> when it is guaranteed that no more frames [=restricted=]
+                      (or [=unrestricted=]) according to <var>PRE-STATE</var> will be delivered to
+                      the application, and that any additional frames delivered to the application
+                      will therefore be [=restricted=] (or [=unrestricted=]) according to either
                       <var>POST-STATE</var> or a later state.
                     </p>
                   </li>
