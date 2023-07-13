@@ -243,10 +243,11 @@
         <li>
           <!-- TODO(eladalon1983 / mfoltzgoogle): Improve spec language around rendering. -->
           <!-- TODO(eladalon1983 / mfoltzgoogle): Specify the following "TODO reasons". -->
-          Because of TODO reasons, it is guaranteed that the <var>cropTarget</var>.[[\Element]] is
-          in its own stacking context. Ensure this stacking context is rendered in a separate pass,
-          clip the result to the intersection with the captured [=top-level browsing context=]'s
-          viewport, and deliver the frame to <var>videoTrack</var>.
+          Because of TODO reasons, it is guaranteed that the
+          <var>cropTarget</var>.{{CropTarget/[[Element]]}} is in its own stacking context. Ensure
+          this stacking context is rendered in a separate pass, clip the result to the intersection
+          with the captured [=top-level browsing context=]'s viewport, and deliver the frame to
+          <var>videoTrack</var>.
           <div class="note">
             It is outside of the scope of this specification whether the result of the separate
             render pass is used when producing a full representation of the captured surface for
