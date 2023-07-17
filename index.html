@@ -124,6 +124,116 @@
     </section>
     <section id="restricting-a-track">
       <h2><dfn>Restriction Mechanism</dfn></h2>
+      <section>
+        <h3>Definitions</h3>
+        <section>
+          <h4>Restrictable tracks</h4>
+          <p>
+            We say that a {{MediaStreamTrack}} <var>T</var> is a
+            <dfn>restrictable MediaStreamTrack</dfn> if and only if it fulfills all of the following
+            conditions:
+          </p>
+          <ul>
+            <li>
+              <var>T</var> is either a {{MediaStreamTrack}} returned inside of a {{MediaStream}}
+              through a call to {{MediaDevices/getDisplayMedia()}}, or a clone of such a track.
+            </li>
+            <li>
+              <var>T</var>.<a data-cite="mediacapture-streams/#dfn-kind">kind</a> is
+              <a data-cite="mediacapture-streams/#dfn-video">"video"</a>.
+            </li>
+            <li>
+              <var>T</var>.<a data-cite="mediacapture-streams/#dfn-readystate">readyState</a> is
+              <a data-cite="mediacapture-streams/#idl-def-MediaStreamTrackState.live">"live"</a>.
+            </li>
+            <li><var>T</var> is not <a data-cite="mediacapture-region#dfn-cropped">cropped</a>.</li>
+          </ul>
+        </section>
+        <section>
+          <h4>Elements eligible for restriction</h4>
+          <p>
+            We say that an {{Element}} <var>E</var> is <dfn>eligible for restriction</dfn> if and
+            only if it fulfils all of the following conditions:
+          </p>
+          <ul>
+            <li>
+              <p><var>E</var> forms a stacking context.</p>
+            </li>
+            <li>
+              <p>
+                <var>E</var> is
+                <a data-cite="css-transforms-2#grouping-property-values">flattened in 3D.</a>
+              </p>
+            </li>
+            <li>
+              <p>
+                <var>E</var> forms a
+                <a data-cite="filter-effects-2/#backdrop-root">backdrop root</a>.
+              </p>
+            </li>
+            <li>
+              <p>
+                <var>E</var> has exactly one
+                <a data-cite="css-break-4/#box-fragment">box fragment</a>.
+              </p>
+            </li>
+            <li>
+              <p><var>E</var> is <a data-cite="css-images-4/#element-not-rendered">rendered</a>.</p>
+            </li>
+          </ul>
+          <div class="note">
+            <p>
+              To ensure these conditions hold, developers may use CSS such as the following snippet:
+            </p>
+            <pre class="css">
+              #target {
+                isolation: isolate;     /* Forms a stacking context. */
+                transform-style: flat;  /* Flattened. */
+              }
+            </pre>
+          </div>
+        </section>
+        <h4>Valid restriction targets</h4>
+        <p>
+          We say that an {{Element}} <var>E</var> is a <dfn>valid restriction target</dfn> for a
+          {{MediaStreamTrack}} <var>T</var>, if and only if all of the following conditions hold:
+        </p>
+        <ul>
+          <li><var>T</var> is a [=restrictable MediaStreamTrack=].</li>
+          <li><var>E</var> is a [=eligible for restriction=].</li>
+          <li>
+            The [=top-level browsing context=] of the
+            <a data-cite="screen-capture/#dfn-display-surface">display surface</a>
+            that is the source of <var>T</var>, is <var>E</var>'s [=shadow-including root=].
+          </li>
+        </ul>
+        <div class="note">
+          <p>
+            Informally, this means that <var>T</var> is an active video track associated with
+            tab-capture, and <var>E</var> is an Element [=connected=] to the DOM in the captured
+            tab.
+          </p>
+          <p>
+            Note that whether an Element <var>E</var> is a [=valid restriction target=] for a
+            {{MediaStreamTrack}} <var>T</var> may change either before or after a capture starts, as
+            well as before or after restriction starts. Examples include:
+          </p>
+          <ul>
+            <li><var>T</var> is stopped programmatically.</li>
+            <li><var>T</var> is stopped by the user.</li>
+            <li>
+              <var>T</var>.<a data-cite="mediacapture-streams/#dfn-source-0">[[\Source]]</a> changes
+              due to user interaction with the user agent and/or operating system.
+            </li>
+            <li><var>E</var>'s set of CSS attributes changes.</li>
+          </ul>
+          <p>Invalidity before restriction starts will suppress restriction.</p>
+          <p>
+            Invalidity after restriction starts will suppress additional frames until validity is
+            restored.
+          </p>
+        </div>
+      </section>
       <section id="browser-capture-media-stream-track-extension">
         <h3>BrowserCaptureMediaStreamTrack extension</h3>
         <p>
@@ -146,45 +256,29 @@
           <dd>
             <p>
               Calls to this method instruct the user agent to start/stop restrict a video track.
-              When invoked, the user agent MUST execute the following algorithm:
+            </p>
+            <p>
+              When invoked with <var>cropTarget</var> as the first parameter, the user agent MUST
+              execute the following algorithm:
             </p>
             <ol>
+              <li>
+                <p>
+                  If [=this=] is not a [=restrictable MediaStreamTrack=], return a {{Promise}}
+                  [=rejected=] with a new {{NotSupportedError}}.
+                </p>
+              </li>
               <li>Let <var>p</var> be a new {{Promise}}.</li>
               <li>
                 <p>Run the following steps in parallel:</p>
                 <ol>
                   <li>
-                    <p>
-                      If [=this=] track's
-                      <a data-cite="mediacapture-streams/#dfn-kind">kind</a>
-                      is not <a data-cite="mediacapture-streams/#dfn-video">"video"</a>, return a
-                      [=rejected=] {{Promise}} with {{NotSupportedError}}.
-                    </p>
+                    <p>Let <var>E</var> be <var>cropTarget</var>.{{CropTarget/[[Element]]}}.</p>
                   </li>
                   <li>
                     <p>
-                      If [=this=] track's
-                      <a data-cite="mediacapture-streams/#dfn-readystate">readyState</a>
-                      is not
-                      <a data-cite="mediacapture-streams/#idl-def-MediaStreamTrackState.live"
-                        >"live"</a
-                      >, return a [=rejected=] {{Promise}} with {{NotSupportedError}}. If the track
-                      is not live, return a rejected Promise with {{InvalidStateError}}.
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      If [=this=] video track is
-                      <a data-cite="mediacapture-region#dfn-cropped">cropped</a>, return a
-                      {{Promise}} [=rejected=] with an {{InvalidStateError}}.
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      If <var>cropTarget</var> is not {{undefined}}, but does not represent an
-                      {{Element}} within a [=browsing context=] whose [=top-level browsing context=]
-                      is the same as that which the track is capturing, the user agent MUST return a
-                      {{Promise}} [=rejected=] with an {{UnknownError}}.
+                      If <var>E</var> is not a [=valid restriction target=] for [=this=], return a
+                      {{Promise}} [=rejected=] with a new {{InvalidStateError}}.
                     </p>
                   </li>
                   <li>
@@ -192,37 +286,29 @@
                       Update [=this=] video track's [=restriction-state=] according to
                       <var>cropTarget</var>:
                     </p>
-                    <ul>
+                    <ol>
                       <li>
                         If <var>cropTarget</var> is NOT {{undefined}}, the user agent MUST set
                         [=this=] video track's [=restriction-state=] to [=restricted=] and start
-                        restricting the track as follows:
-                        <ul>
-                          <li>
-                            Cropping the video to the intersection of the target-element's bounding
-                            box and the [=top-level browsing context=]'s viewport.
-                          </li>
-                          <li>
-                            Remove any pixels not derived from either the target-element or its
-                            descendants. (TODO: This point requires a less hand-wavy definition.)
-                          </li>
-                        </ul>
+                        [=applying the restriction transformation=] to all frames delivered to
+                        [=this=] video track with <var>cropTarget</var> as the target.
                       </li>
                       <li>
                         If <var>cropTarget</var> is set to {{undefined}}, the user agent MUST set
                         [=this=] video track's [=restriction-state=] to [=unrestricted=] and stop
-                        restricting the track.
+                        [=applying the restriction transformation=] to frames delivered to [=this=]
+                        video track.
                       </li>
-                    </ul>
+                    </ol>
                   </li>
                   <li>
                     <p>
                       Call the track's state before this method invocation <var>PRE-STATE</var>, and
                       after this method invocation <var>POST-STATE</var>. The user agent MUST
-                      resolve <var>p</var> when it is guaranteed that no more frames cropped (or
-                      uncropped) according to <var>PRE-STATE</var> will be delivered to the
-                      application, and that any additional frames delivered to the application will
-                      therefore be cropped (or uncropped) according to either
+                      resolve <var>p</var> when it is guaranteed that no more frames [=restricted=]
+                      (or [=unrestricted=]) according to <var>PRE-STATE</var> will be delivered to
+                      the application, and that any additional frames delivered to the application
+                      will therefore be [=restricted=] (or [=unrestricted=]) according to either
                       <var>POST-STATE</var> or a later state.
                     </p>
                   </li>
@@ -233,6 +319,31 @@
           </dd>
         </dl>
       </section>
+    </section>
+    <section id="applying-the-restriction-transformation">
+      <h2><dfn>Applying the restriction transformation</dfn></h2>
+      <p>
+        Whenever the user agent is about to produce a new <var>frame</var> for a video track
+        <var>T</var> that is [=restricted=] to a given target <var>cropTarget</var>, the user agent
+        MUST execute the following algorithm:
+      </p>
+      <ol>
+        <li>Let <var>E</var> be <var>cropTarget</var>.{{CropTarget/[[Element]]}}.</li>
+        <li>
+          If <var>E</var> is not a [=valid restriction target=] for <var>T</var>, abort without
+          producing a new frame.
+        </li>
+        <li>
+          Let <var>intersection</var> be the intersection of <var>E</var>'s bounding box and the
+          captured surface's [=top-level browsing context=]'s viewport.
+        </li>
+        <li>If <var>intersection</var> is empty, abort without producing a new frame.</li>
+        <li>
+          A corollary of previous steps is that <var>E</var> forms a stacking context. Produce and
+          deliver a frame consisting of an independent rendering of that stacking context, clipped
+          to <var>intersection</var>.
+        </li>
+      </ol>
     </section>
     <section id="sample-code">
       <h2>Sample Code</h2>
