@@ -165,6 +165,15 @@
               <var>E</var> forms a <a data-cite="filter-effects-2/#backdrop-root">backdrop root</a>.
             </li>
           </ul>
+          <div class="note">
+            <p>To ensure these conditions hold, developers may use CSS such as the following snippet:</p>
+            <pre class="css">
+              #target {
+                isolation: isolate;     /* Forms a stacking context. */
+                transform-style: flat;  /* Flattened. */
+              }
+            </pre>
+          </div>
         </section>
         <h4>Valid restriction targets</h4>
         <p>
