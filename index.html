@@ -156,20 +156,34 @@
             only if it fulfils all of the following conditions:
           </p>
           <ul>
-            <li><var>E</var> forms a stacking context.</li>
             <li>
-              <var>E</var> is
-              <a data-cite="css-transforms-2#grouping-property-values">flattened in 3D.</a>
+              <p><var>E</var> forms a stacking context.</p>
             </li>
             <li>
-              <var>E</var> forms a <a data-cite="filter-effects-2/#backdrop-root">backdrop root</a>.
+              <p>
+                <var>E</var> is
+                <a data-cite="css-transforms-2#grouping-property-values">flattened in 3D.</a>
+              </p>
             </li>
             <li>
-              <var>E</var> is <a data-cite="css-images-4/#element-not-rendered">rendered</a>.
+              <p>
+                <var>E</var> forms a
+                <a data-cite="filter-effects-2/#backdrop-root">backdrop root</a>.
+              </p>
+            </li>
+            <li>
+              <p>
+                <var>E</var> only has one <a data-cite="css-break-4/#box-fragment">box fragment</a>.
+              </p>
+            </li>
+            <li>
+              <p><var>E</var> is <a data-cite="css-images-4/#element-not-rendered">rendered</a>.</p>
             </li>
           </ul>
           <div class="note">
-            <p>To ensure these conditions hold, developers may use CSS such as the following snippet:</p>
+            <p>
+              To ensure these conditions hold, developers may use CSS such as the following snippet:
+            </p>
             <pre class="css">
               #target {
                 isolation: isolate;     /* Forms a stacking context. */
