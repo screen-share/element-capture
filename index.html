@@ -11,17 +11,18 @@
       <h2>Abstract</h2>
       <p>
         Pre-existing mechanisms such as {{MediaDevices/getDisplayMedia()}} allow Web applications to
-        initiate screen-capture. If the user chooses to share a tab, the capturing application has a
-        video {{MediaStreamTrack}}. Mechanisms such as [[mediacapture-region|Region Capture]] allow
-        this track to be mutated - performing some operation on the captured frames. (In the case of
-        [[mediacapture-region|Region Capture]], this mutation consists of cropping.)
+        initiate screen-capture. If the user chooses to capture a tab, mechanisms such as
+        [[mediacapture-region|Region Capture]] mutate the resulting video track and perform an
+        operation on all subsequent frames produced. (In the example of [[mediacapture-region|Region
+        Capture]], the operation consists of cropping frames to the frame's intersection with the
+        bounding box of a target-element.)
       </p>
       <p>
-        This document introduces a new mutation mechanism which we name "restriction". After a Web
-        application "restricts" a video track to a given target-element, frames produced on that
-        video track only consist information from the target-element and (and its descendants).
-        Phrased differently, the track becomes a capture of the DOM sub-tree rooted at the
-        target-element.
+        Element Capture introduces a new mutation mechanism which we name "restriction". When an
+        application "restricts" a video track to a given target-element, frames produced on the
+        restricted video track only consist of information from the target-element and its
+        descendants. Phrased differently, the track becomes a capture of the DOM sub-tree rooted at
+        the target-element.
       </p>
     </section>
     <section id="sotd"></section>
