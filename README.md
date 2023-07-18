@@ -1,7 +1,7 @@
 # Element Capture
 
 ## Introduction
-Pre-existing mechanisms such as [getDisplayMedia()]([url](https://www.w3.org/TR/screen-capture/#dom-mediadevices-getdisplaymedia)) allow Web applications to initiate screen-capture. If the user chooses to capture a tab, mechanisms such as [Region Capture]([url](https://w3c.github.io/mediacapture-region/)) mutate the resulting video track and perform an operation on all subsequent frames produced. (In the example of [Region Capture]([url](https://w3c.github.io/mediacapture-region/)), the operation consists of cropping frames to the frame's intersection with the bounding box of a target-element.)
+Pre-existing mechanisms such as [getDisplayMedia()](https://www.w3.org/TR/screen-capture/#dom-mediadevices-getdisplaymedia) allow Web applications to initiate screen-capture. If the user chooses to capture a tab, mechanisms such as [Region Capture](https://w3c.github.io/mediacapture-region/) mutate the resulting video track and perform an operation on all subsequent frames produced. (In the example of [Region Capture](https://w3c.github.io/mediacapture-region/), the operation consists of cropping frames to the frame's intersection with the bounding box of a target-element.)
 
 Element Capture introduces a new mutation mechanism which we name "restriction". When an application "restricts" a video track to a given target-element, frames produced on the restricted video track only consist of information from the target-element and its descendants. Phrased differently, the track becomes a capture of the DOM sub-tree rooted at the target-element.
 
