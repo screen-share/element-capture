@@ -140,6 +140,15 @@
               through a call to {{MediaDevices/getDisplayMedia()}}, or a clone of such a track.
             </li>
             <li>
+              <var>T</var> is associated with a
+              <a data-cite="screen-capture/#dfn-browser">browser</a>
+              <a data-cite="screen-capture/#dfn-display-surface">dispaly surface</a>. (That is, if
+              <var>T</var>.{{MediaStreamTrack/getSettings()}} were called, it would have returned a
+              {{MediaTrackSettings}} dictionary containing the key
+              {{MediaTrackSettings/displaySurface}}
+              mapped to the value {{DisplayCaptureSurfaceType/"browser"}}.)
+            </li>
+            <li>
               <var>T</var>.<a data-cite="mediacapture-streams/#dfn-kind">kind</a> is
               <a data-cite="mediacapture-streams/#dfn-video">"video"</a>.
             </li>
