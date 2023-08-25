@@ -138,18 +138,11 @@
           handed to {{BrowserCaptureMediaStreamTrack/restrictTo}} as input.
         </p>
         <pre class="idl">
-            [Exposed=(Window,Worker), Serializable]
-            interface RestrictionTarget {
-              [Exposed=Window, SecureContext] static Promise&lt;RestrictionTarget&gt; fromElement(Element element);
-            };
-          </pre
-        >
-        <div class="note">
-          <p>
-            There is no consensus yet on whether {{RestrictionTarget/fromElement}} should be exposed
-            beyond secure contexts.
-          </p>
-        </div>
+          [Exposed=(Window,Worker), Serializable]
+          interface RestrictionTarget {
+            [Exposed=Window, SecureContext] static Promise&lt;RestrictionTarget&gt; fromElement(Element element);
+          };
+        </pre>
         <dl data-link-for="RestrictionTarget" data-dfn-for="RestrictionTarget">
           <dt>
             <dfn>fromElement()</dfn>
