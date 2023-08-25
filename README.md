@@ -31,10 +31,10 @@ Code in the capture-target:
 
 ```js
 const mainContentArea = navigator.getElementById('mainContentArea');
-const cropTarget = await CropTarget.fromElement(mainContentArea);
-sendCropTarget(cropTarget);
+const restrictionTarget = await RestrictionTarget.fromElement(mainContentArea);
+sendRestrictionTarget(restrictionTarget);
 
-function sendCropTarget(cropTarget) {
+function sendRestrictionTarget(restrictionTarget) {
   // Either send the crop-target using postMessage(),
   // or pass it on locally within the same document.
 }
@@ -43,14 +43,14 @@ function sendCropTarget(cropTarget) {
 Code in the capturing-document:
 
 ```js
-async function startRestrictedCapture(cropTarget) {
+async function startRestrictedCapture(restrictionTarget) {
   const stream = await navigator.mediaDevices.getDisplayMedia();
   const [track] = stream.getVideoTracks();
   if (!!track.restrictTo) {
     handleError(stream);
     return;
   }
-  await track.restrictTo(cropTarget);
+  await track.restrictTo(restrictionTarget);
   transmitVideoRemotely(track);
 }
 ```
