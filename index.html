@@ -120,7 +120,7 @@
         <h3>RestrictionTarget Motivation</h3>
         <p>
           The [=restriction mechanism=] presented in this document
-          ({{BrowserCaptureMediaStreamTrack/cropTo}}) relies on [=Restriction-session Target=]
+          ({{BrowserCaptureMediaStreamTrack/restrictTo}}) relies on [=Restriction-session Target=]
           rather than on direct node references. This allows restriction by one document to a target
           element specified in another document.
         </p>
@@ -129,7 +129,7 @@
         <h3><dfn>RestrictionTarget</dfn> Definition</h3>
         <p>
           RestrictionTarget is an intentionally empty, opaque identifier. Its purpose is to be
-          handed to {{BrowserCaptureMediaStreamTrack/cropTo}} as input.
+          handed to {{BrowserCaptureMediaStreamTrack/restrictTo}} as input.
         </p>
         <pre class="idl">
             [Exposed=(Window,Worker), Serializable]
@@ -152,7 +152,7 @@
             <p>
               Calling {{RestrictionTarget/fromElement}} with an {{Element}} of a supported type
               associates that {{Element}} with a {{RestrictionTarget}}. This {{RestrictionTarget}}
-              may be used as input to {{BrowserCaptureMediaStreamTrack/cropTo}}. We define a
+              may be used as input to {{BrowserCaptureMediaStreamTrack/restrictTo}}. We define a
               <dfn>valid RestrictionTarget</dfn> as one returned by a call to
               {{RestrictionTarget.fromElement()}} in a
               <a data-cite="!HTML#document">document</a> that is still
@@ -165,7 +165,7 @@
               The user agent MUST resolve <var>p</var> only after it has finished all the necessary
               internal propagation of state associated with the new {{RestrictionTarget}}, at which
               point the user agent MUST be ready to receive the new {{RestrictionTarget}} as a valid
-              parameter to {{BrowserCaptureMediaStreamTrack/cropTo}}.
+              parameter to {{BrowserCaptureMediaStreamTrack/restrictTo}}.
             </p>
             <p>
               When cloning an {{Element}} on which {{RestrictionTarget/fromElement}} was previously
