@@ -124,6 +124,12 @@
           rather than on direct node references. This allows restriction by one document to a target
           element specified in another document.
         </p>
+        <p>
+          Because {{BrowserCaptureMediaStreamTrack/cropTo()}} and
+          {{BrowserCaptureMediaStreamTrack/restrictTo()}} use different token types - {{CropTarget}}
+          and {{RestrictionTarget}}, respectively - it is possible for documents to limit the
+          capabilities they bestow on documents that capture them.
+        </p>
       </section>
       <section id="restriction-target">
         <h3><dfn>RestrictionTarget</dfn> Definition</h3>
