@@ -33,8 +33,8 @@
         <h3>Generic Use-Case</h3>
         <p>
           [[mediacapture-region|Region Capture]] allows applications to crop captures. Assume some
-          element <code>TARGET</code> is the crop-target. What if other elements, which are not
-          DOM-descendants of <code>TARGET</code>, draw in front of <code>TARGET</code>? Using
+          element <code>TARGET</code> is the restriction-target. What if other elements, which are
+          not DOM-descendants of <code>TARGET</code>, draw in front of <code>TARGET</code>? Using
           [[mediacapture-region|Region Capture]], these other elements would also get captured,
           which is not always desirable. A mechanism is sought that would allow cropping to
           <code>TARGET</code>'s bounding box, while also excluding from capture any of the content
@@ -98,7 +98,7 @@
       <p>The Element Capture mechanism comprises two parts:</p>
       <ol>
         <li>
-          [=CropTarget production=]: A mechanism for <dfn>tagging</dfn> an {{Element}} as a
+          [=RestrictionTarget production=]: A mechanism for <dfn>tagging</dfn> an {{Element}} as a
           potential target for the [=restriction mechanism=].
         </li>
         <li>
@@ -114,14 +114,129 @@
         {{BrowserCaptureMediaStreamTrack/restrictTo()}} is successfully called.
       </p>
     </section>
-    <section id="produce-crop-target">
-      <h2><dfn>CropTarget Production</dfn></h2>
-      <p>
-        The [[mediacapture-region|Region Capture]] specification details before the
-        <a data-cite="mediacapture-region#produce-crop-target">mechanism</a> for {{CropTarget}}s as
-        well as the <a data-cite="mediacapture-region#crop-target-motivation">motivation</a> for
-        using them.
-      </p>
+    <section id="produce-restriction-target">
+      <h2><dfn>RestrictionTarget Production</dfn></h2>
+      <section id="restriction-target-motivation">
+        <h3>Motivation for defining RestrictionTarget</h3>
+        <p>
+          The [=restriction mechanism=] presented in this document
+          ({{BrowserCaptureMediaStreamTrack/restrictTo}}) relies on a {{RestrictionTarget}} token
+          rather than on direct node references. This allows restriction by one document to a target
+          element specified in another document.
+        </p>
+        <p>
+          Because {{BrowserCaptureMediaStreamTrack/cropTo()}} and
+          {{BrowserCaptureMediaStreamTrack/restrictTo()}} use different token types - {{CropTarget}}
+          and {{RestrictionTarget}}, respectively - it is possible for documents to limit the
+          capabilities they bestow on documents that capture them.
+        </p>
+      </section>
+      <section id="restriction-target">
+        <h3><dfn>RestrictionTarget</dfn> Definition</h3>
+        <p>
+          RestrictionTarget is an intentionally empty, opaque identifier. Its purpose is to be
+          handed to {{BrowserCaptureMediaStreamTrack/restrictTo}} as input.
+        </p>
+        <pre class="idl">
+          [Exposed=(Window,Worker), Serializable]
+          interface RestrictionTarget {
+            [Exposed=Window, SecureContext] static Promise&lt;RestrictionTarget&gt; fromElement(Element element);
+          };
+        </pre>
+        <dl data-link-for="RestrictionTarget" data-dfn-for="RestrictionTarget">
+          <dt>
+            <dfn>fromElement()</dfn>
+          </dt>
+          <dd>
+            <p>
+              Calling {{RestrictionTarget/fromElement}} with an {{Element}} of a supported type
+              associates that {{Element}} with a {{RestrictionTarget}}. This {{RestrictionTarget}}
+              may be used as input to {{BrowserCaptureMediaStreamTrack/restrictTo}}. We define a
+              valid RestrictionTarget as one returned by a call to
+              {{RestrictionTarget.fromElement()}} in a
+              <a data-cite="!HTML#document">document</a> that is still
+              <a data-cite="!HTML#active-document">active</a>.
+            </p>
+            <p>
+              When {{RestrictionTarget/fromElement}} is called with a given <var>element</var>, the
+              user agent [=create a RestrictionTarget|creates a RestrictionTarget=] with
+              <var>element</var> as input. The user agent MUST return a {{Promise}} <var>p</var>.
+              The user agent MUST resolve <var>p</var> only after it has finished all the necessary
+              internal propagation of state associated with the new {{RestrictionTarget}}, at which
+              point the user agent MUST be ready to receive the new {{RestrictionTarget}} as a valid
+              parameter to {{BrowserCaptureMediaStreamTrack/restrictTo}}.
+            </p>
+            <p>
+              When cloning an {{Element}} on which {{RestrictionTarget/fromElement}} was previously
+              called, the clone is not associated with any {{RestrictionTarget}}. If
+              {{RestrictionTarget/fromElement}} is later called on the clone, a new
+              {{RestrictionTarget}} will be assigned to it.
+            </p>
+            <div class="note">
+              <p>
+                There is no consensus yet on whether producing a {{RestrictionTarget}} should be
+                done by invoking an asynchronous method like {{RestrictionTarget.fromElement()}}, or
+                a {{RestrictionTarget}} constructor that accepts an {{Element}} as input. This is
+                further discussed on
+                <a href="https://github.com/w3c/mediacapture-region/issues/17">issue #17</a>.
+              </p>
+            </div>
+          </dd>
+        </dl>
+        <p>
+          To <dfn data-export>create a RestrictionTarget</dfn> with <var>element</var> as input, run
+          the following steps:
+        </p>
+        <ol>
+          <li>
+            <p>Let <var>RestrictionTarget</var> be a new object of type {{RestrictionTarget}}.</p>
+          </li>
+          <li>
+            <p>Let <var>weakRef</var> be a weak reference to <var>element</var>.</p>
+            <p>
+              [=Create a RestrictionTarget|Create=]
+              <var>RestrictionTarget</var>.<dfn data-dfn-for="RestrictionTarget" class="export"
+                >[[\Element]]</dfn
+              >
+              initialized to <var>weakRef</var>.
+            </p>
+            <div class="note">
+              <p>
+                <var>RestrictionTarget</var> keeps a weak reference to the element it represents. In
+                other words, <var>RestrictionTarget</var> will not prevent garbage collection of its
+                element.
+              </p>
+            </div>
+          </li>
+        </ol>
+        <p>
+          {{RestrictionTarget}} objects are serializable. The [=serialization steps=], given
+          <var>value</var>, <var>serialized</var>, and a boolean <var>forStorage</var>, are:
+        </p>
+        <ol>
+          <li>
+            <p>
+              If <var>forStorage</var> is <code>true</code>, throw with new {{DOMException}} object
+              whose {{DOMException/name}} attribute has the value {{"DataCloneError"}}.
+            </p>
+          </li>
+          <li>
+            <p>
+              Set <var>serialized</var>.[[\RestrictionTargetElement]] to
+              <var>value</var>.{{RestrictionTarget/[[Element]]}}.
+            </p>
+          </li>
+        </ol>
+        <p>The [=deserialization steps=], given <var>serialized</var> and <var>value</var> are:</p>
+        <ol>
+          <li>
+            <p>
+              Set <var>value</var>.{{RestrictionTarget/[[Element]]}} to
+              <var>serialized</var>.[[\RestrictionTargetElement]].
+            </p>
+          </li>
+        </ol>
+      </section>
     </section>
     <section id="restricting-a-track">
       <h2><dfn>Restriction Mechanism</dfn></h2>
@@ -249,7 +364,7 @@
         <pre class="idl">
           [Exposed = Window]
           partial interface BrowserCaptureMediaStreamTrack {
-            Promise&lt;undefined&gt; restrictTo(CropTarget? cropTarget);
+            Promise&lt;undefined&gt; restrictTo(RestrictionTarget? RestrictionTarget);
           };
         </pre>
         <dl
@@ -264,8 +379,8 @@
               Calls to this method instruct the user agent to start/stop restrict a video track.
             </p>
             <p>
-              When invoked with <var>cropTarget</var> as the first parameter, the user agent MUST
-              execute the following algorithm:
+              When invoked with <var>RestrictionTarget</var> as the first parameter, the user agent
+              MUST execute the following algorithm:
             </p>
             <ol>
               <li>
@@ -279,7 +394,10 @@
                 <p>Run the following steps in parallel:</p>
                 <ol>
                   <li>
-                    <p>Let <var>E</var> be <var>cropTarget</var>.{{CropTarget/[[Element]]}}.</p>
+                    <p>
+                      Let <var>E</var> be
+                      <var>RestrictionTarget</var>.{{RestrictionTarget/[[Element]]}}.
+                    </p>
                   </li>
                   <li>
                     <p>
@@ -290,20 +408,20 @@
                   <li>
                     <p>
                       Update [=this=] video track's [=restriction-state=] according to
-                      <var>cropTarget</var>:
+                      <var>RestrictionTarget</var>:
                     </p>
                     <ol>
                       <li>
-                        If <var>cropTarget</var> is NOT {{undefined}}, the user agent MUST set
-                        [=this=] video track's [=restriction-state=] to [=restricted=] and start
+                        If <var>RestrictionTarget</var> is NOT {{undefined}}, the user agent MUST
+                        set [=this=] video track's [=restriction-state=] to [=restricted=] and start
                         [=applying the restriction transformation=] to all frames delivered to
-                        [=this=] video track with <var>cropTarget</var> as the target.
+                        [=this=] video track with <var>RestrictionTarget</var> as the target.
                       </li>
                       <li>
-                        If <var>cropTarget</var> is set to {{undefined}}, the user agent MUST set
-                        [=this=] video track's [=restriction-state=] to [=unrestricted=] and stop
-                        [=applying the restriction transformation=] to frames delivered to [=this=]
-                        video track.
+                        If <var>RestrictionTarget</var> is set to {{undefined}}, the user agent MUST
+                        set [=this=] video track's [=restriction-state=] to [=unrestricted=] and
+                        stop [=applying the restriction transformation=] to frames delivered to
+                        [=this=] video track.
                       </li>
                     </ol>
                   </li>
@@ -330,11 +448,11 @@
       <h2><dfn>Applying the restriction transformation</dfn></h2>
       <p>
         Whenever the user agent is about to produce a new <var>frame</var> for a video track
-        <var>T</var> that is [=restricted=] to a given target <var>cropTarget</var>, the user agent
-        MUST execute the following algorithm:
+        <var>T</var> that is [=restricted=] to a given target <var>RestrictionTarget</var>, the user
+        agent MUST execute the following algorithm:
       </p>
       <ol>
-        <li>Let <var>E</var> be <var>cropTarget</var>.{{CropTarget/[[Element]]}}.</li>
+        <li>Let <var>E</var> be <var>RestrictionTarget</var>.{{RestrictionTarget/[[Element]]}}.</li>
         <li>
           If <var>E</var> is not a [=valid restriction target=] for <var>T</var>, abort without
           producing a new frame.
@@ -357,11 +475,11 @@
         <p>Code in the capture-target:</p>
         <pre class="javascript">
           const mainContentArea = navigator.getElementById('mainContentArea');
-          const cropTarget = await CropTarget.fromElement(mainContentArea);
-          sendCropTarget(cropTarget);
+          const RestrictionTarget = await RestrictionTarget.fromElement(mainContentArea);
+          sendRestrictionTarget(RestrictionTarget);
 
-          function sendCropTarget(cropTarget) {
-            // Either send the crop-target using postMessage(),
+          function sendRestrictionTarget(RestrictionTarget) {
+            // Either send the restriction-target using postMessage(),
             // or pass it on locally within the same document.
           }
         </pre>
@@ -369,14 +487,14 @@
       <div class="example">
         <p>Code in the capturing-document:</p>
         <pre class="javascript">
-          async function startRestrictedCapture(cropTarget) {
+          async function startRestrictedCapture(RestrictionTarget) {
             const stream = await navigator.mediaDevices.getDisplayMedia();
             const [track] = stream.getVideoTracks();
             if (!!track.restrictTo) {
               handleError(stream);
               return;
             }
-            await track.restrictTo(cropTarget);
+            await track.restrictTo(RestrictionTarget);
             transmitVideoRemotely(track);
           }
         </pre>
