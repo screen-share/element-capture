@@ -117,10 +117,10 @@
     <section id="produce-restriction-target">
       <h2><dfn>RestrictionTarget Production</dfn></h2>
       <section id="restriction-target-motivation">
-        <h3>RestrictionTarget Motivation</h3>
+        <h3>Motivation for defining RestrictionTarget</h3>
         <p>
           The [=restriction mechanism=] presented in this document
-          ({{BrowserCaptureMediaStreamTrack/restrictTo}}) relies on [=Restriction-session Target=]
+          ({{BrowserCaptureMediaStreamTrack/restrictTo}}) relies on a {{RestrictionTarget}} token
           rather than on direct node references. This allows restriction by one document to a target
           element specified in another document.
         </p>
@@ -153,7 +153,7 @@
               Calling {{RestrictionTarget/fromElement}} with an {{Element}} of a supported type
               associates that {{Element}} with a {{RestrictionTarget}}. This {{RestrictionTarget}}
               may be used as input to {{BrowserCaptureMediaStreamTrack/restrictTo}}. We define a
-              <dfn>valid RestrictionTarget</dfn> as one returned by a call to
+              valid RestrictionTarget as one returned by a call to
               {{RestrictionTarget.fromElement()}} in a
               <a data-cite="!HTML#document">document</a> that is still
               <a data-cite="!HTML#active-document">active</a>.
