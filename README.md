@@ -35,7 +35,7 @@ const restrictionTarget = await RestrictionTarget.fromElement(mainContentArea);
 sendRestrictionTarget(restrictionTarget);
 
 function sendRestrictionTarget(restrictionTarget) {
-  // Either send the crop-target using postMessage(),
+  // Either send the restriction-target using postMessage(),
   // or pass it on locally within the same document.
 }
 ```
