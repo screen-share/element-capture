@@ -54,3 +54,6 @@ async function startRestrictedCapture(restrictionTarget) {
   transmitVideoRemotely(track);
 }
 ```
+## Demos
+* [element-capture-demo.glitch.me](https://element-capture-demo.glitch.me/)
+* [sub-capture-demo.glitch.me](https://sub-capture-demo.glitch.me/)
