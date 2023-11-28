@@ -339,10 +339,8 @@
             </li>
             <li><var>E</var>'s set of CSS attributes changes.</li>
           </ul>
-          <p>Invalidity before restriction starts will suppress restriction.</p>
           <p>
-            Invalidity after restriction starts will suppress additional frames until validity is
-            restored.
+            Invalidity will suppress additional frames until validity is restored.
           </p>
         </div>
       </section>
@@ -388,12 +386,6 @@
                     <p>
                       Let <var>E</var> be
                       <var>RestrictionTarget</var>.{{RestrictionTarget/[[Element]]}}.
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      If <var>E</var> is not a [=valid restriction target=] for [=this=], return a
-                      {{Promise}} [=rejected=] with a new {{InvalidStateError}}.
                     </p>
                   </li>
                   <li>
