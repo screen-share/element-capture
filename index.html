@@ -490,5 +490,108 @@
         </pre>
       </div>
     </section>
+    <section id="privacy-and-security-considerations">
+      <h1>Privacy and Security Considerations</h1>
+      <section>
+        <h2>Benefits of this API</h2>
+        <p>
+          For non-malicious applications, the APIs introduced by this specifications should be a
+          pure positive, as they allow responsible applications to pare down the information
+          recorded. This has positive properties.
+        </p>
+        <p>For example, using pre-existing mechanisms, video-conferencing applications can:</p>
+        <ol>
+          <li>
+            <p>Embed content in an iframe.</p>
+          </li>
+          <li>
+            <p>
+              Prompt the user to capture the current tab. (Using
+              {{MediaDevices/getDisplayMedia()}}.)
+            </p>
+          </li>
+          <li>
+            <p>
+              Crop the resulting capture to just the iframe that's intended for capture. (Using
+              {{BrowserCaptureMediaStreamTrack/cropTo()}}.)
+            </p>
+          </li>
+          <li>
+            <p>
+              Transmit the resulting pixels to remote participants. (Using
+              <a data-cite="webrtc#dom-rtcpeerconnection">RTCPeerConnection</a>.)
+            </p>
+          </li>
+        </ol>
+        <p>
+          However, this is risky, because any content that happens to be drawn in front of the
+          content intended for capture will also be transmitted remotely. Even if this happens but
+          briefly, remote users might notice. And such content might be highly private - for
+          example, chat notifications, reminders, speaker notes...
+        </p>
+        <p>
+          The mechanisms introduced in this specification allow a responsible application to
+          structure itself in a way that would completely guaratnee that such issues are impossible.
+          Such an application can more easily make and keep privacy guarantees to its users.
+        </p>
+      </section>
+      <section>
+        <h2>Concerns about this API</h2>
+        <section>
+          <h3>Reading cross-origin pixels</h3>
+          <p>
+            The mechanisms introduced by this specification all rely on self-capture being provided
+            by some other means - typically {{MediaDevices/getDisplayMedia()}}. The main concern
+            with these, is that they allow an application read-access to cross-origin content.
+          </p>
+          <p>
+            When a malicious application tricks the user to approve self-capture, it can then load
+            cross-origin content in an invisible iframe and then bring the content to the forefront,
+            allowing the attacker to read the content before the user can react. Such attacks are
+            already possible without any of the mechanisms introduced by this specification.
+          </p>
+        </section>
+        <section>
+          <h3>Aggravating old attack vetors</h3>
+          <p>
+            The main concern is that the mechanisms we introduce in this specification should not
+            <b>aggravate</b> the old attack vectors described above. One naturally worries that the
+            mechanisms we introduce allow the old attacks to be carried out <b>surreptitiously</b>.
+            We contend that the mechanisms introduced here do not increase an attacker's power to
+            hide the attack; such attack-concealment was always possible using any of the following
+            techniques:
+          </p>
+          <ul>
+            <li>
+              <p>
+                <b>Displaying the content briefly.</b> Attackers could always flash content to the
+                screen for a timespan of a single frame. This is long enough to record it, but not
+                long enough for users to understand it.
+              </p>
+            </li>
+            <li>
+              <p>
+                <b>Displaying the content piecemeal.</b> Attackers could always display break the
+                content up into multiple small pieces, even one pixel each, and display them in
+                different locations and times. Users would not be able to observe this manipulation,
+                but it is trivial for software to collect these pixels and reconstruct a picture
+                from it.
+              </p>
+            </li>
+            <li>
+              <p>
+                <b>Displaying the content at low opacity.</b> Attackers could always display content
+                at an opacity that is imperceptible for a user, but which machines can still read.
+              </p>
+            </li>
+          </ul>
+          <p>
+            Any of these techniques is enough on its own, but through a combination of them,
+            malicious applications were always able to conceal their attacks effectively and still
+            read content efficiently.
+          </p>
+        </section>
+      </section>
+    </section>
   </body>
 </html>
