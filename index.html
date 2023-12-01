@@ -591,6 +591,29 @@
             read content efficiently.
           </p>
         </section>
+        <section id="reading-occluded-content">
+          <h3>Reading occluded content</h3>
+          <p>
+            One might worry that a malicious app be able to remove occlusions in cross-origin
+            iframes, without opt-in from that content. The shape of the API prevents such attacks -
+            the cross-origin iframe would have to produce a {{RestrictionTarget}} and pass it to the
+            would-be attacker. As {{RestrictionTargets}} serve no purpose other than as part of the
+            API introduced by this specification, the minting and passing of a {{RestrictionTarget}}
+            proves the cross-origin iframe's permission for its occlusions to be removed.
+          </p>
+        </section>
+        <section>
+          <h3>Interaction with Region Capture</h3>
+          <p>
+            In designing the APIs introduced by this specification, a conscious decision was made to
+            not reuse {{CropTarget}}, and define a dedicated token instead ({{CropTarget}}). This
+            ensures that any existing Web applications that have previously been designed and
+            implemented with {{BrowserCaptureMediaStreamTrack/cropTo()}} in mind, but not with
+            {{BrowserCaptureMediaStreamTrack/restrictTo()}}, would not be effectively opting into
+            allowing occlusions to be removed, as described in the
+            <a href="#reading-occluded-content">previous section</a>.
+          </p>
+        </section>
       </section>
     </section>
   </body>
