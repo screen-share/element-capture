@@ -458,6 +458,31 @@
           to <var>intersection</var>.
         </li>
       </ol>
+      <p>
+        Let the <dfn>decorated bounding box</dfn> of an element be smallest
+        axis-aligned rectangle that contains
+        the <a data-cite="css-backgrounds-3#border-image-area">border image areas</a> of the
+        element's principal box.
+      <p>
+        The frame produced in the final step is constructed by
+        rendering <var>E</var> and its descendants over an infinite transparent
+        canvas, positioned so that the edges of the <a>decorated bounding
+        box</a> are flush with the edges of the frame.
+      </p>
+      <p class="note">
+        In some implementations, the underlying pixel format for the frame data
+        will not be able to carry alpha channel information.  In this case, the
+        implementation can blend the rendered frame with an infinite canvas of black
+        (`rgb(0,0,0)`).
+      </p>
+      <p class="note">
+        Implementations may either re-use existing bitmap data generated
+        for <var>E</var> or regenerate the display of the element to maximize
+        quality at the frame's size (for example, if the implementation detects
+        that the referenced element is an SVG fragment). However, the frame must
+        look identical to <var>E</var> as rendered above, modulo rasterization
+        quality.
+      </p>
     </section>
     <section id="sample-code">
       <h2>Sample Code</h2>
