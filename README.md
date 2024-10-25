@@ -35,7 +35,9 @@ A partial list of use-cases includes:
 - Removing distracting content from video-captures, such as drop-down lists.
 - Client-side rendering.
 
-## Sample usage
+## How do I use Element Capture?
+
+### Sample code of a simple use case
 
 The `captureTarget` is an `Element` on your page which contains the content the user wishes to capture. You want the video conferencing web app to capture `captureTarget` and share it with remote participants. So you derive a `RestrictionTarget` from `captureTarget`. After restricting the video track using this `RestrictionTarget`, frames on that video track now consist only of the pixels that are part of `captureTarget` and its direct DOM descendants.
 
