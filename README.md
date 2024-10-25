@@ -4,7 +4,7 @@
 
 Pre-existing mechanisms such as [getDisplayMedia()](https://www.w3.org/TR/screen-capture/#dom-mediadevices-getdisplaymedia) allow Web applications to initiate screen-capture. If the user chooses to capture a tab, mechanisms such as [Region Capture](https://w3c.github.io/mediacapture-region/) mutate the resulting video track and perform an operation on all subsequent frames produced. (In the example of [Region Capture](https://w3c.github.io/mediacapture-region/), the operation consists of cropping frames to the frame's intersection with the bounding box of a target-element.)
 
-Element Capture introduces a new mutation mechanism which we name "restriction". When an application "restricts" a video track to a given target-element, frames produced on the restricted video track only consist of information from the target-element and its descendants. Phrased differently, the track becomes a capture of the DOM sub-tree rooted at the target-element.
+Element Capture introduces a new mutation mechanism which we name "restriction". When an application "restricts" a video track to a given target-element, frames produced on the restricted video track only consist of information from the target-element and its descendants - clipped to the tab's viewport. Phrased differently, the track becomes a capture of the DOM sub-tree rooted at the target-element (or more accurately, its intersection witht the current tab's viewport).
 
 ## What is removed by "restriction"?
 
@@ -14,9 +14,12 @@ When a track is "restricted", three things are removed:
 2. Any content which is occluding the target element.
 3. Any content which is occluded by the target element.
 
+Note that pixels outside of the viewport were not listed. These pixels were not captured by either [getDisplayMedia()](https://www.w3.org/TR/screen-capture/#dom-mediadevices-getdisplaymedia) or [`getViewportMedia()`](https://w3c.github.io/mediacapture-viewport/) to begin with, and "restriction" does not add them back.
+
 ## Sample use cases
 
 Consider the following Web application:
+
 <p align="center">
   <img src="img/element_capture_mock1.png"></img>
 </p>
@@ -158,6 +161,7 @@ To keep things interesting, consider partial transparency. In the illustration b
 At the moment, most user agents do not support tab-capture with an alpha channel. That information is absent from the initial capture, prior to restriction.
 
 If an app sets a partially transparent capture-target, stripping the alpha channel has some possible consequences:
+
 - Colors might change. Partially transparent target-elements drawn over a light background might appear darker when the alpha channel is removed, and those drawn over a dark background might appear lighter.
 - Colors that were invisible or imperceptible to the user when the alpha channel was set to its maximum, would appear once the alpha channel is removed. For example, this could lead to unexpected black regions in the captured frames, if the transparent sections had the RGBA code `rgba(0, 0, 0, 0)`.
 
@@ -174,6 +178,10 @@ This API builds on top of existing screen-sharing APIs, meaning that the permiss
 ### What about audio?
 
 This API only deals with video tracks (as did [Region Capture](https://w3c.github.io/mediacapture-region/)). No extension of this work to deal with audio is expected; that would be a completely separate effort, and would likely employ a different approach.
+
+### What about pixels outside the tab's viewport?
+
+Pixels outside the tab's viewport are not captured by either normal tab-capture, nor after "restriction" is applied.
 
 ## Alternatives considered
 
