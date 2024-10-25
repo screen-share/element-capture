@@ -4,7 +4,7 @@
 
 ### 2.1. What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
 
-This feature does not, in itself, expose additional information to Web sites or third parties. This feature allows the shaping of information already exposed to Web sites that self-capture through pre-existing means (such as getDisplayMedia).
+This feature does not, in itself, expose additional information to Web sites or third-parties. This feature allows the shaping of information already exposed to Web sites that self-capture through pre-existing means (such as getDisplayMedia).
 
 ### 2.2. Do features in your specification expose the minimum amount of information necessary to enable their intended uses?
 
@@ -48,6 +48,7 @@ No. (Other than that the user agent's native UI will inform the user that tab-ca
 
 ### 2.12 What temporary identifiers do the features in this specification create or expose to the web?
 
+This feature allows a website to mint tokens called [`RestrictrionTarget`](https://screen-share.github.io/element-capture/#dom-restrictiontarget)s. These are opaque interfaces which are only meaningful within their [browsing context](https://html.spec.whatwg.org/multipage/document-sequences.html#browsing-context). They do not outlive the browsing session. The party minting the tokens may transfer them to trusted third-parties within the [browsing context](https://html.spec.whatwg.org/multipage/document-sequences.html#browsing-context). The only use these tokens have, is to allow transforming of video tracks through the [restriction transformation](https://screen-share.github.io/element-capture/#applying-the-restriction-transformation).
 
 ### 2.13. How does this specification distinguish between behavior in first-party and third-party contexts?
 
