@@ -6,6 +6,14 @@ Pre-existing mechanisms such as [getDisplayMedia()](https://www.w3.org/TR/screen
 
 Element Capture introduces a new mutation mechanism which we name "restriction". When an application "restricts" a video track to a given target-element, frames produced on the restricted video track only consist of information from the target-element and its descendants. Phrased differently, the track becomes a capture of the DOM sub-tree rooted at the target-element.
 
+## What is removed by "restriction"?
+
+When a track is "restricted", three things are removed:
+
+1. Any content from outside of the target element's bounding box.
+2. Any content which is occluding the target element.
+3. Any content which is occluded by the target element.
+
 ## Sample use cases
 
 Consider the following Web application:
@@ -57,21 +65,17 @@ async function startRestrictedCapture(restrictionTarget) {
 }
 ```
 
-### Common questions
+## Common questions
 
-#### What is removed?
-
-When a track is "restricted", three things are removed:
-
-1. Any content from outside of the target element's bounding box.
-2. Any content which is occluding the target element.
-3. Any content which is occluded by the target element.
-
-#### What about the alpha channel?
+### What about the alpha channel?
 
 At the moment, no user agent supports capturing with an alpha channel. That information is absent from the initial capture, prior to restriction. However, it is even more visible that the alpha channel is missing after restriction, as the target element might have been partially transparent, whereas a captured tab would always have some opaque background.
 
 Note that when restricting to a partially transparent target element, the removal of the alpha channel could result in captured content that appears a different color/shade/hue than the local user would perceive, given the background content's effects on the local viewport.
+
+### What is the permission flow?
+
+TODO
 
 ## Demos
 
