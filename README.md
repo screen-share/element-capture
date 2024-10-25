@@ -67,6 +67,22 @@ async function startRestrictedCapture(restrictionTarget) {
 
 ## Common questions
 
+### Occluding content? Occluded content?
+
+Occluding content is content which is drawn on top of other content. In the following example, the red rectangle is occluding content.
+
+<p align="center">
+  <img src="img/occluding_occluded_1.png" width="750"></img>
+</p>
+
+Occluded content is content which is partially obscured by other content. In the example above, the letters between A and Z (exclusive) are occluded by the red rectangle.
+
+To keep things interesting, consider partial transparency. In the illustration below, the occluding content is partially transparent. If Element Capture were used here to target the red rectangle, none of the content from the blue rectangle should be captured.
+
+<p align="center">
+  <img src="img/occluding_occluded_2.png" width="750"></img>
+</p>
+
 ### What about the alpha channel?
 
 At the moment, no user agent supports capturing with an alpha channel. That information is absent from the initial capture, prior to restriction. However, it is even more visible that the alpha channel is missing after restriction, as the target element might have been partially transparent, whereas a captured tab would always have some opaque background.
