@@ -93,6 +93,10 @@ Note that when restricting to a partially transparent target element, the remova
 
 This API builds on top of existing screen-sharing APIs, meaning that the permission flow remains entirely unchanged. An application would first call [`getDisplayMedia()`](https://www.w3.org/TR/screen-capture/), [`getViewportMedia()`](https://w3c.github.io/mediacapture-viewport/), or any other future screen-sharing API, and the user would first go through the usual selection and consent processes associated with that API. It's only after this process completes, and only if the user shares the (entire) current tab, that the Element Capture API can be invoked.
 
+### What about audio?
+
+This API only deals with video tracks (as did [Region Capture](https://w3c.github.io/mediacapture-region/)). No extension of this work to deal with audio is expected; that would be a completely separate effort, and would likely employ a different approach.
+
 ## Alternatives considered
 
 ### Rejected alternative: Capture-specific-element API
@@ -100,7 +104,8 @@ This API builds on top of existing screen-sharing APIs, meaning that the permiss
 We have considered shaping the API along the lines of `element.capture()`.
 
 We preferred the restriction-model instead due to multiple reasons, among them:
-1. It is desirable to hook into established patterns in obtaining the user's informed consent. 
+
+1. It is desirable to hook into established patterns in obtaining the user's informed consent.
 1. Prompting the user to share anything other than the entire current tab, might mislead the users into thinking that they were granting permission to capture only what they currently see; in reality, the target element might have sub-elements that can be navigated, like iframes.
 1. It is useful to be able to switch between target-elements without having to prompt the user again.
 1. We wanted a convenient way to anchor the API to up-and-coming APIs such as [`getViewportMedia()`](https://w3c.github.io/mediacapture-viewport/) and the security mechanisms they intend to provide.
