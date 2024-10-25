@@ -17,7 +17,9 @@ When a track is "restricted", three things are removed:
 ## Sample use cases
 
 Consider the following Web application:
-![image](img/element_capture_mock1.png)
+<p align="center">
+  <img src="img/element_capture_mock1.png"></img>
+</p>
 
 This Web app combines a productivity suite and a video conferencing tool. It uses [Region Capture](https://w3c.github.io/mediacapture-region/) to crop away remote participants' own videos before it transmits the main content area to everyone.
 
@@ -153,9 +155,17 @@ To keep things interesting, consider partial transparency. In the illustration b
 
 ### What about the alpha channel?
 
-At the moment, no user agent supports capturing with an alpha channel. That information is absent from the initial capture, prior to restriction. However, it is even more visible that the alpha channel is missing after restriction, as the target element might have been partially transparent, whereas a captured tab would always have some opaque background.
+At the moment, most user agents do not support tab-capture with an alpha channel. That information is absent from the initial capture, prior to restriction.
 
-Note that when restricting to a partially transparent target element, the removal of the alpha channel could result in captured content that appears a different color/shade/hue than the local user would perceive, given the background content's effects on the local viewport.
+If an app sets a partially transparent capture-target, stripping the alpha channel has some possible consequences:
+- Colors might change. Partially transparent target-elements drawn over a light background might appear darker when the alpha channel is removed, and those drawn over a dark background might appear lighter.
+- Colors that were invisible or imperceptible to the user when the alpha channel was set to its maximum, would appear once the alpha channel is removed. For example, this could lead to unexpected black regions in the captured frames, if the transparent sections had the RGBA code `rgba(0, 0, 0, 0)`.
+
+<p align="center">
+  <img src="img/transparency.png"></img>
+</p>
+
+It is expected that Web applications will find Element Capture useful in contexts where that is not an issue, or that they would employ their own mitigations.
 
 ### What is the permission flow?
 
