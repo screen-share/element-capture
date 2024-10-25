@@ -46,6 +46,9 @@ No.
 
 No. (Other than that the user agent's native UI will inform the user that tab-capture is being used. This feature builds on top of tab-capture; the native UI will have been shown regardless.)
 
+### 2.12 What temporary identifiers do the features in this specification create or expose to the web?
+
+
 ### 2.13. How does this specification distinguish between behavior in first-party and third-party contexts?
 
 This feature does not distinguish first-party and third-party contexts.
@@ -55,7 +58,7 @@ This feature does not distinguish first-party and third-party contexts.
 Not applicable.
 
 
-### 2.Does this specification have both "Security Considerations" and "Privacy Considerations" sections?
+### 2.15. Does this specification have both "Security Considerations" and "Privacy Considerations" sections?
 
 Yes.
 
@@ -69,9 +72,9 @@ This feature only works for documents which use pre-existing mechanisms to self-
 
 ### 2.18. What should this questionnaire have asked?
 
-A Web application that's engaged in self-capture can bypass origin isolation and read pixels from a third-party iframe. This is pre-existing. The main concern raised by the feature introduced hereby, is that it allows a Web application to observe pixels which the user cannot see.
+A Web application that's engaged in self-capture can bypass origin isolation and read pixels from a third-party iframe. This is pre-existing. The main concern raised by the feature introduced by this specification, is that it allows a Web application to observe pixels invisible to the user due to occlussions by other content.
 
-We contend that although this sounds scary at first, it does not actually worsen security and/or privacy, because no new attacks can be launched against the user.
+We contend that although this sounds scary at first, it does not actually diminish security and/or privacy, because no new attacks can be launched against the user.
 * First, a malicious Web application that managed to trick the user into self-capture, would already be able to obtain access to the same set of pixels before the user had a chance to stop it - load an iframe in the background, then bring it to the forefront; by the time the user mentally registers it, the pixels will have already been recorded by the attacker.
 * Second, if a malicious application wishes to read these pixels surreptitiously, this can be done using a combination of any number of techniques. The include:
    * Display the content briefly.
