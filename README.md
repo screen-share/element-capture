@@ -65,9 +65,9 @@ Then call `restrictTo()` on the video track with the `RestrictionTarget` as the 
 ```js
 // Start restricting the self-capture video track using the RestrictionTarget.
 await track.restrictTo(restrictionTarget);
-
-// Enjoy! Transmit remotely.
 ```
+
+You can now do anything you'd like with this restricted track; for example, you could transmit it remotely.
 
 ### Deep dive
 
