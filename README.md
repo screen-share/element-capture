@@ -35,35 +35,101 @@ A partial list of use-cases includes:
 - Removing distracting content from video-captures, such as drop-down lists.
 - Client-side rendering.
 
-## Sample Code
+## Sample usage
 
-Code in the capture-target:
+The `captureTarget` is an `Element` on your page which contains the content the user wishes to capture. You want the video conferencing web app to capture `captureTarget` and share it with remote participants. So you derive a `RestrictionTarget` from `captureTarget`. After restricting the video track using this `RestrictionTarget`, frames on that video track now consist only of the pixels that are part of `captureTarget` and its direct DOM descendants.
+
+If `captureTarget` changes size, shape or location, the video track follows along, without requiring any additional input from either web app. Occluding content that appears, disappears or moves around, similarly requires no special treatment.
+
+Start out by allowing the user to capture the current tab.
 
 ```js
-const mainContentArea = navigator.getElementById("mainContentArea");
-const restrictionTarget = await RestrictionTarget.fromElement(mainContentArea);
-sendRestrictionTarget(restrictionTarget);
+// Ask the user for permission to start capturing the current tab.
+// In the future, this should be done with getViewportMedia().
+const stream = await navigator.mediaDevices.getDisplayMedia({
+  selfBrowserSurface: "include",
+});
+const [track] = stream.getVideoTracks();
+```
 
-function sendRestrictionTarget(restrictionTarget) {
-  // Either send the restriction-target using postMessage(),
-  // or pass it on locally within the same document.
+Define a `RestrictionTarget` by calling `RestrictionTarget.fromElement()` with an element of your choice as input.
+
+```js
+// Associate captureTarget with a new RestrictionTarget
+const captureTarget = document.querySelector("#captureTarget");
+const restrictionTarget = await RestrictionTarget.fromElement(captureTarget);
+```
+
+Then call `restrictTo()` on the video track with the `RestrictionTarget` as the input. Once the last promise resolves, all subsequent frames will be restricted.
+
+```js
+// Start restricting the self-capture video track using the RestrictionTarget.
+await track.restrictTo(restrictionTarget);
+
+// Enjoy! Transmit remotely.
+```
+
+### Deep dive
+
+#### Feature detection
+
+To check if `RestrictionTarget.fromElement()` is supported, use:
+
+```js
+if ("RestrictionTarget" in self && "fromElement" in RestrictionTarget) {
+  // Deriving a restriction target is supported.
 }
 ```
 
-Code in the capturing-document:
+#### Derive a RestrictionTarget
+
+Focus on the `Element` called `captureTarget`. To derive a RestrictionTarget from it, call `RestrictionTarget.fromElement(captureTarget)`. The returned promise will be resolved with a new `RestrictionTarget` object if successful.
 
 ```js
-async function startRestrictedCapture(restrictionTarget) {
-  const stream = await navigator.mediaDevices.getDisplayMedia();
-  const [track] = stream.getVideoTracks();
-  if (!!track.restrictTo) {
-    handleError(stream);
-    return;
-  }
-  await track.restrictTo(restrictionTarget);
-  transmitVideoRemotely(track);
-}
+const captureTarget = document.querySelector("#captureTarget");
+const restrictionTarget = await RestrictionTarget.fromElement(captureTarget);
 ```
+
+Unlike an `Element`, a `RestrictionTarget` object is [serializable](https://developer.mozilla.org/en-US/docs/Glossary/Serializable_object). It can be passed to another document using [`Window.postMessage()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), for instance.
+
+#### Restricting
+
+When capturing a tab, the video track exposes `restrictTo()`. When capturing the current tab, it is valid to call `restrictTo()` with either `null` or any `RestrictionTarget` derived from an `Element` within the current tab.
+
+Calls to `restrictTo(restrictionTarget)` mutate the video track into a capture of `captureTarget`, as though it were drawn by itself, independently of the rest of the DOM. Any descendants of `captureTarget` are also captured; siblings of `captureTarget` are eliminated from the capture. The result is that any frames delivered on the track appear as though they were cropped to the contours of `captureTarget`, and any occluding and occluded content are removed.
+
+```js
+// Start restricting the self-capture video track using the RestrictionTarget.
+await track.restrictTo(restrictionTarget);
+```
+
+Calls to `restrictTo(null)` revert the track to its original state.
+
+```js
+// Stop restricting.
+await track.restrictTo(null);
+```
+
+If the call to `restrictTo()` is successful, the returned promise is resolved when it can be guaranteed that all subsequent video frames will be restricted to `captureTarget`.
+
+If unsuccessful, the promise is rejected. An unsuccessful call to `restrictTo()` will be for one of the following reasons:
+
+- If the `restrictionTarget` was minted in a tab other than the one being captured.
+- If the `restrictionTarget` was derived from an Element that no longer exists.
+- If the current track is not a self-capture video track. (Future extensions to restricting other tabs are considered but not planned.)
+- If the Element from which `restrictionTarget` was derived is not [eligible for restriction]().
+
+#### Eligible and ineligible capture targets
+
+It is always possible to start restricting a track to any valid capture-target. However, frames won't be produced under [certain conditions](https://screen-share.github.io/element-capture/#elements-eligible-for-restriction); for example, if the element or an ancestor is `display: none`. The general rationale is that restriction applies only to an element that comprises a single, cohesive, two-dimensional, rectangular area, whose pixels can be logically determined in isolation from any parent or sibling elements.
+
+One important consideration for ensuring the element is eligible for restriction, is that it must form its own [stacking context](https://developer.mozilla.org/en-US/docs/Glossary/Stacking_context). To ensure this, you could specify the [isolation](https://developer.mozilla.org/en-US/docs/Web/CSS/isolation) CSS property, setting it to `isolate`.
+
+```html
+<div id="captureTarget" style="isolation: isolate;"></iframe>
+```
+
+Note that the target element can toggle between being eligible and ineligible for restriction at any arbitrary point, for example, if the app changes its CSS properties. It's up to the app to use reasonable capture targets and avoid changing their properties unexpectedly. If the target element becomes ineligible, new frames will simply not be emitted on the track until the target element again becomes eligible for restriction.
 
 ## Common questions
 
