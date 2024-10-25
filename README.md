@@ -75,7 +75,7 @@ Note that when restricting to a partially transparent target element, the remova
 
 ### What is the permission flow?
 
-TODO
+This API builds on top of existing screen-sharing APIs, meaning that the permission flow remains entirely unchanged. An application would first call `getDisplayMedia()`, `getViewportMedia()`, or any other future screen-sharing API, and the user would first go through the usual selection and consent processes associated with that API. It's only after this process completes, and only if the user shares the (entire) current tab, that the Element Capture API can be invoked.
 
 ## Demos
 
