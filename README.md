@@ -8,7 +8,7 @@ Element Capture introduces a new mutation mechanism which we name "restriction".
 
 ## Sample use cases
 
-Consider the following Web application.
+Consider the following Web application:
 ![image](img/element_capture_mock1.png)
 
 This Web app combines a productivity suite and a video conferencing tool. It uses [Region Capture](https://w3c.github.io/mediacapture-region/) to crop away remote participants' own videos before it transmits the main content area to everyone.
@@ -56,6 +56,22 @@ async function startRestrictedCapture(restrictionTarget) {
   transmitVideoRemotely(track);
 }
 ```
+
+### Common questions
+
+#### What is removed?
+
+When a track is "restricted", three things are removed:
+
+1. Any content from outside of the target element's bounding box.
+2. Any content which is occluding the target element.
+3. Any content which is occluded by the target element.
+
+#### What about the alpha channel?
+
+At the moment, no user agent supports capturing with an alpha channel. That information is absent from the initial capture, prior to restriction. However, it is even more visible that the alpha channel is missing after restriction, as the target element might have been partially transparent, whereas a captured tab would always have some opaque background.
+
+Note that when restricting to a partially transparent target element, the removal of the alpha channel could result in captured content that appears a different color/shade/hue than the local user would perceive, given the background content's effects on the local viewport.
 
 ## Demos
 
