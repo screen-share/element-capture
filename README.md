@@ -29,7 +29,7 @@ This Web app combines a productivity suite and a video conferencing tool. It use
 But if other HTMLElements end up being drawn on top of the "main content area", they also get captured. This is not always desirable - see the following illustration.
 
 <p align="center">
-  <img src="img/element_capture_mock2.png" width="750"></img>
+  <img src="img/element_capture_mock2.png"></img>
 </p>
 
 Element Capture allows this app to capture only the main content area, excluding any occluding content such as drop-down lists.
@@ -145,7 +145,7 @@ Note that the target element can toggle between being eligible and ineligible fo
 Occluding content is content which is drawn on top of other content. In the following example, the red rectangle is occluding content.
 
 <p align="center">
-  <img src="img/occluding_occluded_1.png" width="750"></img>
+  <img src="img/occluding_occluded_1.png"></img>
 </p>
 
 Occluded content is content which is partially obscured by other content. In the example above, the letters between A and Z (exclusive) are occluded by the red rectangle.
@@ -153,7 +153,7 @@ Occluded content is content which is partially obscured by other content. In the
 To keep things interesting, consider partial transparency. In the illustration below, the occluding content is partially transparent. If Element Capture were used here to target the red rectangle, none of the content from the blue rectangle should be captured.
 
 <p align="center">
-  <img src="img/occluding_occluded_2.png" width="750"></img>
+  <img src="img/occluding_occluded_2.png"></img>
 </p>
 
 ### What about the alpha channel?
