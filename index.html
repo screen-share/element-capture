@@ -180,12 +180,12 @@
         </p>
         <ol>
           <li>
-            <p>Let |RestrictionTarget| be a new object of type {{RestrictionTarget}}.</p>
+            <p>Let |restrictionTarget| be a new object of type {{RestrictionTarget}}.</p>
           </li>
           <li>
             <p>Let |weakRef| be a weak reference to |element|.</p>
             <p>
-              [=Create a RestrictionTarget|Create=] |RestrictionTarget|.<dfn
+              [=Create a RestrictionTarget|Create=] |restrictionTarget|.<dfn
                 data-dfn-for="RestrictionTarget"
                 class="export"
                 >[[\Element]]</dfn
@@ -194,8 +194,8 @@
             </p>
             <div class="note">
               <p>
-                |RestrictionTarget| keeps a weak reference to the element it represents. In other
-                words, |RestrictionTarget| will not prevent garbage collection of its element.
+                |restrictionTarget| keeps a weak reference to the element it represents. In other
+                words, |restrictionTarget| will not prevent garbage collection of its element.
               </p>
             </div>
           </li>
@@ -375,7 +375,7 @@
               Calls to this method instruct the user agent to start/stop restrict a video track.
             </p>
             <p>
-              When invoked with |RestrictionTarget| as the first parameter, the user agent MUST
+              When invoked with |restrictionTarget| as the first parameter, the user agent MUST
               execute the following algorithm:
             </p>
             <ol>
@@ -390,7 +390,7 @@
                 <p>Run the following steps in parallel:</p>
                 <ol>
                   <li>
-                    <p>Let |E| be |RestrictionTarget|.{{RestrictionTarget/[[Element]]}}.</p>
+                    <p>Let |E| be |restrictionTarget|.{{RestrictionTarget/[[Element]]}}.</p>
                   </li>
                   <li>
                     <p>
@@ -402,17 +402,17 @@
                   <li>
                     <p>
                       Update [=this=] video track's [=restriction-state=] according to
-                      |RestrictionTarget|:
+                      |restrictionTarget|:
                     </p>
                     <ol>
                       <li>
-                        If |RestrictionTarget| is NOT {{undefined}}, the user agent MUST set
+                        If |restrictionTarget| is NOT {{undefined}}, the user agent MUST set
                         [=this=] video track's [=restriction-state=] to [=restricted=] and start
                         [=applying the restriction transformation=] to all frames delivered to
-                        [=this=] video track with |RestrictionTarget| as the target.
+                        [=this=] video track with |restrictionTarget| as the target.
                       </li>
                       <li>
-                        If |RestrictionTarget| is set to {{undefined}}, the user agent MUST set
+                        If |restrictionTarget| is set to {{undefined}}, the user agent MUST set
                         [=this=] video track's [=restriction-state=] to [=unrestricted=] and stop
                         [=applying the restriction transformation=] to frames delivered to [=this=]
                         video track.
@@ -443,11 +443,11 @@
       <h2><dfn>Applying the restriction transformation</dfn></h2>
       <p>
         Whenever the user agent is about to produce a new |frame| for a video track |T| that is
-        [=restricted=] to a given target |RestrictionTarget|, the user agent MUST execute the
+        [=restricted=] to a given target |restrictionTarget|, the user agent MUST execute the
         following algorithm:
       </p>
       <ol>
-        <li>Let |E| be |RestrictionTarget|.{{RestrictionTarget/[[Element]]}}.</li>
+        <li>Let |E| be |restrictionTarget|.{{RestrictionTarget/[[Element]]}}.</li>
         <li>
           If |E| is not a [=valid restriction target=] for |T|, abort without producing a new frame.
         </li>
