@@ -158,13 +158,13 @@
               <a data-cite="!HTML#active-document">active</a>.
             </p>
             <p>
-              When {{RestrictionTarget/fromElement}} is called with a given <var>element</var>, the
-              user agent [=create a RestrictionTarget|creates a RestrictionTarget=] with
-              <var>element</var> as input. The user agent MUST return a {{Promise}} <var>p</var>.
-              The user agent MUST resolve <var>p</var> only after it has finished all the necessary
-              internal propagation of state associated with the new {{RestrictionTarget}}, at which
-              point the user agent MUST be ready to receive the new {{RestrictionTarget}} as a valid
-              parameter to {{BrowserCaptureMediaStreamTrack/restrictTo}}.
+              When {{RestrictionTarget/fromElement}} is called with a given |element|, the user
+              agent [=create a RestrictionTarget|creates a RestrictionTarget=] with |element| as
+              input. The user agent MUST return a {{Promise}} |p|. The user agent MUST resolve |p|
+              only after it has finished all the necessary internal propagation of state associated
+              with the new {{RestrictionTarget}}, at which point the user agent MUST be ready to
+              receive the new {{RestrictionTarget}} as a valid parameter to
+              {{BrowserCaptureMediaStreamTrack/restrictTo}}.
             </p>
             <p>
               When cloning an {{Element}} on which {{RestrictionTarget/fromElement}} was previously
@@ -175,55 +175,55 @@
           </dd>
         </dl>
         <p>
-          To <dfn data-export>create a RestrictionTarget</dfn> with <var>element</var> as input, run
-          the following steps:
+          To <dfn data-export>create a RestrictionTarget</dfn> with |element| as input, run the
+          following steps:
         </p>
         <ol>
           <li>
-            <p>Let <var>RestrictionTarget</var> be a new object of type {{RestrictionTarget}}.</p>
+            <p>Let |RestrictionTarget| be a new object of type {{RestrictionTarget}}.</p>
           </li>
           <li>
-            <p>Let <var>weakRef</var> be a weak reference to <var>element</var>.</p>
+            <p>Let |weakRef| be a weak reference to |element|.</p>
             <p>
-              [=Create a RestrictionTarget|Create=]
-              <var>RestrictionTarget</var>.<dfn data-dfn-for="RestrictionTarget" class="export"
+              [=Create a RestrictionTarget|Create=] |RestrictionTarget|.<dfn
+                data-dfn-for="RestrictionTarget"
+                class="export"
                 >[[\Element]]</dfn
               >
-              initialized to <var>weakRef</var>.
+              initialized to |weakRef|.
             </p>
             <div class="note">
               <p>
-                <var>RestrictionTarget</var> keeps a weak reference to the element it represents. In
-                other words, <var>RestrictionTarget</var> will not prevent garbage collection of its
-                element.
+                |RestrictionTarget| keeps a weak reference to the element it represents. In other
+                words, |RestrictionTarget| will not prevent garbage collection of its element.
               </p>
             </div>
           </li>
         </ol>
         <p>
           {{RestrictionTarget}} objects are serializable. The [=serialization steps=], given
-          <var>value</var>, <var>serialized</var>, and a boolean <var>forStorage</var>, are:
+          |value|, |serialized|, and a boolean |forStorage|, are:
         </p>
         <ol>
           <li>
             <p>
-              If <var>forStorage</var> is <code>true</code>, throw with new {{DOMException}} object
-              whose {{DOMException/name}} attribute has the value {{"DataCloneError"}}.
+              If |forStorage| is <code>true</code>, throw with new {{DOMException}} object whose
+              {{DOMException/name}} attribute has the value {{"DataCloneError"}}.
             </p>
           </li>
           <li>
             <p>
-              Set <var>serialized</var>.[[\RestrictionTargetElement]] to
-              <var>value</var>.{{RestrictionTarget/[[Element]]}}.
+              Set |serialized|.[[\RestrictionTargetElement]] to
+              |value|.{{RestrictionTarget/[[Element]]}}.
             </p>
           </li>
         </ol>
-        <p>The [=deserialization steps=], given <var>serialized</var> and <var>value</var> are:</p>
+        <p>The [=deserialization steps=], given |serialized| and |value| are:</p>
         <ol>
           <li>
             <p>
-              Set <var>value</var>.{{RestrictionTarget/[[Element]]}} to
-              <var>serialized</var>.[[\RestrictionTargetElement]].
+              Set |value|.{{RestrictionTarget/[[Element]]}} to
+              |serialized|.[[\RestrictionTargetElement]].
             </p>
           </li>
         </ol>
@@ -236,64 +236,62 @@
         <section>
           <h4>Restrictable tracks</h4>
           <p>
-            We say that a {{MediaStreamTrack}} <var>T</var> is a
+            We say that a {{MediaStreamTrack}} |T| is a
             <dfn>restrictable MediaStreamTrack</dfn> if and only if it fulfills all of the following
             conditions:
           </p>
           <ul>
             <!-- TODO: Use spec-linking after merging https://github.com/w3c/mediacapture-main/pull/1015. -->
-            <li><var>T</var>.<code>[[\Restrictable]]</code> is <code>true</code>.</li>
+            <li>|T|.<code>[[\Restrictable]]</code> is <code>true</code>.</li>
             <li>
-              <var>T</var> is associated with a
+              |T| is associated with a
               <a data-cite="screen-capture/#dfn-browser">browser</a>
               <a data-cite="screen-capture/#dfn-display-surface">display surface</a>. (That is, if
-              <var>T</var>.{{MediaStreamTrack/getSettings()}} were called, it would have returned a
+              |T|.{{MediaStreamTrack/getSettings()}} were called, it would have returned a
               {{MediaTrackSettings}} dictionary containing the key
               {{MediaTrackSettings/displaySurface}} mapped to the value
               {{DisplayCaptureSurfaceType/"browser"}}.)
             </li>
             <li>
-              <var>T</var>.<a data-cite="mediacapture-streams/#dfn-kind">[[\Kind]]</a> is
+              |T|.<a data-cite="mediacapture-streams/#dfn-kind">[[\Kind]]</a> is
               <a data-cite="mediacapture-streams/#dfn-video">"video"</a>.
             </li>
             <li>
-              <var>T</var>.<a data-cite="mediacapture-streams/#dfn-readystate">[[\ReadyState]]</a>
-              is <a data-cite="mediacapture-streams/#idl-def-MediaStreamTrackState.live">"live"</a>.
+              |T|.<a data-cite="mediacapture-streams/#dfn-readystate">[[\ReadyState]]</a> is
+              <a data-cite="mediacapture-streams/#idl-def-MediaStreamTrackState.live">"live"</a>.
             </li>
           </ul>
         </section>
         <section>
           <h4>Elements eligible for restriction</h4>
           <p>
-            We say that an {{Element}} <var>E</var> is <dfn>eligible for restriction</dfn> if and
-            only if it fulfills all of the following conditions:
+            We say that an {{Element}} |E| is <dfn>eligible for restriction</dfn> if and only if it
+            fulfills all of the following conditions:
           </p>
           <ul>
             <li>
-              <p>
-                <var>E</var> forms a <a data-cite="css2ed#stacking-context">stacking context</a>.
-              </p>
+              <p>|E| forms a <a data-cite="css2ed#stacking-context">stacking context</a>.</p>
             </li>
             <li>
               <p>
-                <var>E</var> is
+                |E| is
                 <a data-cite="css-transforms-2#grouping-property-values">flattened in 3D</a>.
               </p>
             </li>
             <li>
               <p>
-                <var>E</var> forms a
+                |E| forms a
                 <a data-cite="filter-effects-2/#backdrop-root">backdrop root</a>.
               </p>
             </li>
             <li>
               <p>
-                <var>E</var> has exactly one
+                |E| has exactly one
                 <a data-cite="css-break-4/#box-fragment">box fragment</a>.
               </p>
             </li>
             <li>
-              <p><var>E</var> is <a data-cite="css-images-4/#element-not-rendered">rendered</a>.</p>
+              <p>|E| is <a data-cite="css-images-4/#element-not-rendered">rendered</a>.</p>
             </li>
           </ul>
           <div class="note">
@@ -310,39 +308,38 @@
         </section>
         <h4>Valid restriction targets</h4>
         <p>
-          We say that an {{Element}} <var>E</var> is a <dfn>valid restriction target</dfn> for a
-          {{MediaStreamTrack}} <var>T</var>, if and only if all of the following conditions hold:
+          We say that an {{Element}} |E| is a <dfn>valid restriction target</dfn> for a
+          {{MediaStreamTrack}} |T|, if and only if all of the following conditions hold:
         </p>
         <ul>
-          <li><var>T</var> is a [=restrictable MediaStreamTrack=].</li>
-          <li><var>E</var> is a [=eligible for restriction=].</li>
+          <li>|T| is a [=restrictable MediaStreamTrack=].</li>
+          <li>|E| is a [=eligible for restriction=].</li>
           <li>
             The [=top-level browsing context=] of the
             <a data-cite="screen-capture/#dfn-display-surface">display surface</a>
-            that is the source of <var>T</var>, is <var>E</var>'s [=shadow-including root=].
+            that is the source of |T|, is |E|'s [=shadow-including root=].
           </li>
         </ul>
         <div class="note">
           <p>
-            Informally, this means that <var>T</var> is an active video track associated with
-            tab-capture, and <var>E</var> is an Element [=connected=] to the DOM in the captured
-            tab.
+            Informally, this means that |T| is an active video track associated with tab-capture,
+            and |E| is an Element [=connected=] to the DOM in the captured tab.
           </p>
           <p>
-            Note that whether an Element <var>E</var> is a [=valid restriction target=] for a
-            {{MediaStreamTrack}} <var>T</var> may change either before or after a capture starts, as
-            well as before or after restriction starts. Examples include:
+            Note that whether an Element |E| is a [=valid restriction target=] for a
+            {{MediaStreamTrack}} |T| may change either before or after a capture starts, as well as
+            before or after restriction starts. Examples include:
           </p>
           <ul>
-            <li><var>T</var> is stopped programmatically.</li>
-            <li><var>T</var> is stopped by the user.</li>
+            <li>|T| is stopped programmatically.</li>
+            <li>|T| is stopped by the user.</li>
             <li>
-              <var>T</var>.<a data-cite="mediacapture-streams/#dfn-source-0">[[\Source]]</a> changes
-              due to user interaction with the user agent and/or operating system.
+              |T|.<a data-cite="mediacapture-streams/#dfn-source-0">[[\Source]]</a> changes due to
+              user interaction with the user agent and/or operating system.
             </li>
             <li>
-              <var>E</var>'s set of CSS attributes change such that <var>E</var> is no longer
-              [=eligible for restriction=].
+              |E|'s set of CSS attributes change such that |E| is no longer [=eligible for
+              restriction=].
             </li>
           </ul>
           <p>Invalidity will suppress additional frames until validity is restored.</p>
@@ -363,7 +360,7 @@
         <p>
           All tasks queued below use the
           <a data-cite="!HTML#rendering-task-source">rendering task source</a> associated with the
-          same <a data-cite="!HTML#global-object">global object</a> as the
+          same <a data-cite="!HTML#global object">global object</a> as the
           {{BrowserCaptureMediaStreamTrack}}.
         </p>
         <dl
@@ -378,8 +375,8 @@
               Calls to this method instruct the user agent to start/stop restrict a video track.
             </p>
             <p>
-              When invoked with <var>RestrictionTarget</var> as the first parameter, the user agent
-              MUST execute the following algorithm:
+              When invoked with |RestrictionTarget| as the first parameter, the user agent MUST
+              execute the following algorithm:
             </p>
             <ol>
               <li>
@@ -388,15 +385,12 @@
                   [=rejected=] with a new {{NotSupportedError}}.
                 </p>
               </li>
-              <li>Let <var>p</var> be a new {{Promise}}.</li>
+              <li>Let |p| be a new {{Promise}}.</li>
               <li>
                 <p>Run the following steps in parallel:</p>
                 <ol>
                   <li>
-                    <p>
-                      Let <var>E</var> be
-                      <var>RestrictionTarget</var>.{{RestrictionTarget/[[Element]]}}.
-                    </p>
+                    <p>Let |E| be |RestrictionTarget|.{{RestrictionTarget/[[Element]]}}.</p>
                   </li>
                   <li>
                     <p>
@@ -408,38 +402,38 @@
                   <li>
                     <p>
                       Update [=this=] video track's [=restriction-state=] according to
-                      <var>RestrictionTarget</var>:
+                      |RestrictionTarget|:
                     </p>
                     <ol>
                       <li>
-                        If <var>RestrictionTarget</var> is NOT {{undefined}}, the user agent MUST
-                        set [=this=] video track's [=restriction-state=] to [=restricted=] and start
+                        If |RestrictionTarget| is NOT {{undefined}}, the user agent MUST set
+                        [=this=] video track's [=restriction-state=] to [=restricted=] and start
                         [=applying the restriction transformation=] to all frames delivered to
-                        [=this=] video track with <var>RestrictionTarget</var> as the target.
+                        [=this=] video track with |RestrictionTarget| as the target.
                       </li>
                       <li>
-                        If <var>RestrictionTarget</var> is set to {{undefined}}, the user agent MUST
-                        set [=this=] video track's [=restriction-state=] to [=unrestricted=] and
-                        stop [=applying the restriction transformation=] to frames delivered to
-                        [=this=] video track.
+                        If |RestrictionTarget| is set to {{undefined}}, the user agent MUST set
+                        [=this=] video track's [=restriction-state=] to [=unrestricted=] and stop
+                        [=applying the restriction transformation=] to frames delivered to [=this=]
+                        video track.
                       </li>
                     </ol>
                   </li>
                   <li>
                     <p>
-                      Call the track's state before this method invocation <var>PRE-STATE</var>, and
-                      after this method invocation <var>POST-STATE</var>. The user agent MUST
+                      Call the track's state before this method invocation |preState|, and after
+                      this method invocation |postState|. The user agent MUST
                       <a data-cite="!HTML#queue-a-global-task">queue a global task</a> to resolve
-                      <var>p</var> when it is guaranteed that no more frames [=restricted=] (or
-                      [=unrestricted=]) according to <var>PRE-STATE</var> will be delivered to the
+                      |p| when it is guaranteed that no more frames [=restricted=] (or
+                      [=unrestricted=]) according to |preState| will be delivered to the
                       application, and that any additional frames delivered to the application will
                       therefore be [=restricted=] (or [=unrestricted=]) according to either
-                      <var>POST-STATE</var> or a later state.
+                      |postState| or a later state.
                     </p>
                   </li>
                 </ol>
               </li>
-              <li>Return <var>p</var>.</li>
+              <li>Return |p|.</li>
             </ol>
           </dd>
         </dl>
@@ -448,30 +442,29 @@
     <section id="applying-the-restriction-transformation">
       <h2><dfn>Applying the restriction transformation</dfn></h2>
       <p>
-        Whenever the user agent is about to produce a new <var>frame</var> for a video track
-        <var>T</var> that is [=restricted=] to a given target <var>RestrictionTarget</var>, the user
-        agent MUST execute the following algorithm:
+        Whenever the user agent is about to produce a new |frame| for a video track |T| that is
+        [=restricted=] to a given target |RestrictionTarget|, the user agent MUST execute the
+        following algorithm:
       </p>
       <ol>
-        <li>Let <var>E</var> be <var>RestrictionTarget</var>.{{RestrictionTarget/[[Element]]}}.</li>
+        <li>Let |E| be |RestrictionTarget|.{{RestrictionTarget/[[Element]]}}.</li>
         <li>
-          If <var>E</var> is not a [=valid restriction target=] for <var>T</var>, abort without
-          producing a new frame.
+          If |E| is not a [=valid restriction target=] for |T|, abort without producing a new frame.
         </li>
         <li>
-          Let <var>intersection</var> be the intersection of <var>E</var>'s bounding box and the
-          captured surface's [=top-level browsing context=]'s viewport.
+          Let |intersection| be the intersection of |E|'s bounding box and the captured surface's
+          [=top-level browsing context=]'s viewport.
         </li>
-        <li>If <var>intersection</var> is empty, abort without producing a new frame.</li>
+        <li>If |intersection| is empty, abort without producing a new frame.</li>
         <li>
-          A corollary of previous steps is that <var>E</var> forms a stacking context. Produce and
-          deliver a frame consisting of an independent rendering of that stacking context, clipped
-          to <var>intersection</var>.
+          A corollary of previous steps is that |E| forms a stacking context. Produce and deliver a
+          frame consisting of an independent rendering of that stacking context, clipped to
+          |intersection|.
         </li>
       </ol>
       <p>
-        The frame produced in the final step is constructed by rendering <var>E</var> and its
-        descendants over an infinite transparent canvas, positioned so that the edges of the
+        The frame produced in the final step is constructed by rendering |E| and its descendants
+        over an infinite transparent canvas, positioned so that the edges of the
         <a data-cite="!css-images-4#decorated-bounding-box">decorated bounding box</a> are flush
         with the edges of the frame.
       </p>
@@ -481,10 +474,10 @@
         frame with an infinite canvas of black (`rgb(0,0,0)`).
       </p>
       <p class="note">
-        Implementations may either re-use existing bitmap data generated for <var>E</var> or
-        regenerate the display of the element to maximize quality at the frame's size (for example,
-        if the implementation detects that the referenced element is an SVG fragment). However, the
-        frame must look identical to <var>E</var> as rendered above, modulo rasterization quality.
+        Implementations may either re-use existing bitmap data generated for |E| or regenerate the
+        display of the element to maximize quality at the frame's size (for example, if the
+        implementation detects that the referenced element is an SVG fragment). However, the frame
+        must look identical to |E| as rendered above, modulo rasterization quality.
       </p>
     </section>
     <section id="sample-code">
