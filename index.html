@@ -421,14 +421,14 @@
                   </li>
                   <li>
                     <p>
-                      Call the track's state before this method invocation |PRE-STATE|, and after
-                      this method invocation |POST-STATE|. The user agent MUST
+                      Call the track's state before this method invocation |preState|, and after
+                      this method invocation |postState|. The user agent MUST
                       <a data-cite="!HTML#queue-a-global-task">queue a global task</a> to resolve
                       |p| when it is guaranteed that no more frames [=restricted=] (or
-                      [=unrestricted=]) according to |PRE-STATE| will be delivered to the
+                      [=unrestricted=]) according to |preState| will be delivered to the
                       application, and that any additional frames delivered to the application will
                       therefore be [=restricted=] (or [=unrestricted=]) according to either
-                      |POST-STATE| or a later state.
+                      |postState| or a later state.
                     </p>
                   </li>
                 </ol>
