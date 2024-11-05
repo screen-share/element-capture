@@ -183,21 +183,10 @@
             <p>Let |restrictionTarget| be a new object of type {{RestrictionTarget}}.</p>
           </li>
           <li>
-            <p>Let |weakRef| be a weak reference to |element|.</p>
             <p>
-              [=Create a RestrictionTarget|Create=] |restrictionTarget|.<dfn
-                data-dfn-for="RestrictionTarget"
-                class="export"
-                >[[\Element]]</dfn
-              >
-              initialized to |weakRef|.
+              Set |restrictionTarget|.<dfn data-dfn-for="RestrictionTarget">[[\Element]]</dfn>
+              to |element|.
             </p>
-            <div class="note">
-              <p>
-                |restrictionTarget| keeps a weak reference to the element it represents. In other
-                words, |restrictionTarget| will not prevent garbage collection of its element.
-              </p>
-            </div>
           </li>
         </ol>
         <p>
