@@ -473,7 +473,7 @@
       <div class="example">
         <p>Code in the capture-target:</p>
         <pre class="javascript">
-          const mainContentArea = navigator.getElementById('mainContentArea');
+          const mainContentArea = document.getElementById('mainContentArea');
           const restrictionTarget = await RestrictionTarget.fromElement(mainContentArea);
           sendRestrictionTarget(restrictionTarget);
 
@@ -489,7 +489,7 @@
           async function startRestrictedCapture(RestrictionTarget) {
             const stream = await navigator.mediaDevices.getDisplayMedia();
             const [track] = stream.getVideoTracks();
-            if (!!track.restrictTo) {
+            if (!track.restrictTo) {
               handleError(stream);
               return;
             }
